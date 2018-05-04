@@ -6,6 +6,7 @@ import tempfile
 import subprocess
 import IPython.core.magic as ipym
 
+compiler = '/usr/local/cuda/bin/nvcc'
 ext = '.cu'
 
 
@@ -25,7 +26,7 @@ class NVCCPlugin(ipym.Magics):
 
     @staticmethod
     def compile(file_path):
-        subprocess.check_output(["nvcc", file_path + ext, "-o", file_path + ".out"], stderr=subprocess.STDOUT)
+        subprocess.check_output([compiler, file_path + ext, "-o", file_path + ".out"], stderr=subprocess.STDOUT)
 
     def run(self, file_path, timeit=False):
         if timeit:
