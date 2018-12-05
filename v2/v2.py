@@ -3,12 +3,9 @@ import subprocess
 
 from IPython.core.magic import Magics, cell_magic, magics_class
 from IPython.core.magic_arguments import argument, magic_arguments, parse_argstring
-
 from common import helper
 
 compiler = '/usr/local/cuda/bin/nvcc'
-out = "result.out"
-
 
 @magics_class
 class NVCCPluginV2(Magics):
@@ -24,18 +21,22 @@ class NVCCPluginV2(Magics):
         else:
             print(f'directory {self.output_dir} already exists')
 
+        self.out = os.path.join(current_dir, "result.out")
+        print(f'Out bin {self.out}')
+
     @staticmethod
-    def compile(output_dir, file_paths):
+    def compile(output_dir, file_paths, out):
         res = subprocess.check_output([compiler, '-I' + output_dir, file_paths, "-o", out], stderr=subprocess.STDOUT)
         print(res)
 
     def run(self, timeit=False):
         if timeit:
-            stmt = f"subprocess.check_output(['{out}'], stderr=subprocess.STDOUT)"
+            stmt = f"subprocess.check_output(['{self.out}'], stderr=subprocess.STDOUT)"
             output = self.shell.run_cell_magic(magic_name="timeit", line="-q -o import subprocess", cell=stmt)
         else:
-            output = subprocess.check_output([out], stderr=subprocess.STDOUT)
+            output = subprocess.check_output([self.out], stderr=subprocess.STDOUT)
             output = output.decode('utf8')
+
         return output
 
     @magic_arguments()
@@ -63,7 +64,7 @@ class NVCCPluginV2(Magics):
 
         if args.compile:
             try:
-                self.compile(self.output_dir, file_path)
+                self.compile(self.output_dir, file_path, self.out)
                 output = self.run(timeit=args.timeit)
             except subprocess.CalledProcessError as e:
                 print(e.output.decode("utf8"))
@@ -85,7 +86,7 @@ class NVCCPluginV2(Magics):
             cuda_src = os.listdir(self.output_dir)
             cuda_src = [os.path.join(self.output_dir, x) for x in cuda_src if x[-3:] == '.cu']
             print(f'found sources: {cuda_src}')
-            self.compile(self.output_dir, ' '.join(cuda_src))
+            self.compile(self.output_dir, ' '.join(cuda_src), self.out)
             output = self.run(timeit=args.timeit)
         except subprocess.CalledProcessError as e:
             print(e.output.decode("utf8"))
