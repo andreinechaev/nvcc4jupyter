@@ -1,16 +1,21 @@
 import os
+import sys
+import argparse
 import subprocess
 
 from shlex import quote
 from IPython.core.magic import (
     Magics, cell_magic, magics_class)
 from IPython.core.magic_arguments import (
-    argument, magic_arguments, parse_argstring)
+    argument, magic_arguments)
+from IPython.utils.process import arg_split
+
+from .errors import NVCCUnsupportedInputFile, NVCCUnspecifiedCompiler
 
 
 compiler = '/usr/local/cuda/bin/nvcc'
 
-# import argparse
+SUPPORTED_INPUT = ('.cu', '.c', '.cc', '.cxx', '.cpp', '.ptx', '.cubin', '.fatbin', '.o', '.obj', '.a', '.lib', '.res', '.so')
 
 
 @magics_class
@@ -24,52 +29,56 @@ class NVCCPlugin(Magics):
             os.makedirs(self.output_dir)
         self.out = os.path.join(current_dir, "compile.out")
 
-    @staticmethod
-    def compile(output_dir, file_paths, out):
-        res = subprocess.check_output(
-            [compiler, '-I' + output_dir, file_paths, "-o", out],
-            stderr=subprocess.STDOUT)
-        print(res)
+    def compile(self, compiler_args, inputfile):
+        options = (quote(arg) for arg in compiler_args)
+        try:
+            output = subprocess.check_output([
+                compiler, '-I', self.output_dir, '-o', self.out, *options, inputfile],
+                stderr=subprocess.STDOUT
+            )
+        except FileNotFoundError:
+            raise NVCCUnspecifiedCompiler(
+                'The system cannot find the specified nvcc compiler')
+        return output.decode('utf8')
 
     def run(self):
         output = subprocess.check_output([self.out], stderr=subprocess.STDOUT)
         return output.decode('utf8')
 
     @magic_arguments()
-    @argument('-n', '--name', type=str, help='File name that will be produced by the cell. must end with .cu extension')
+    @argument('-n', '--name', type=str, help='File name that will be produced by the cell.')
     @argument('-c', '--compile', type=bool, help='Should be compiled?')
     @cell_magic
-    def cuda(self, line='', cell=None):
-        args = parse_argstring(self.cuda, line)
-        ex = args.name.split('.')[-1]
-        if ex not in ['cu', 'h']:
-            raise Exception('name must end with .cu or .h')
+    def cuda(self, line, cell):
+        argv = arg_split(line, posix=not sys.platform.startswith('win'))
+        cell_args, compiler_args = self.cuda.parser.parse_known_args(argv)
 
-        # if not os.path.exists(self.output_dir):
-        #     print(f'Output directory does not exist, creating')
+        _, file_extension = os.path.splitext(cell_args.name)
+        if file_extension not in SUPPORTED_INPUT:
+            raise NVCCUnsupportedInputFile(
+                f'{file_extension} unsupported input file suffixes')
+
+        file_path = os.path.join(self.output_dir, cell_args.name)
+        with open(file_path, 'w') as sourse_file:
+            sourse_file.write(cell)
+
+        print(cell_args.compile)
+        if cell_args.compile:
+            compile_output = self.compile(compiler_args, file_path)
+            print(compile_output)
+            return self.run()
+
+        # if cell_args.compile:
         #     try:
-        #         os.mkdir(self.output_dir)
-        #     except OSError:
-        #         print(f"Creation of the directory {self.output_dir} failed")
-        #     else:
-        #         print(f"Successfully created the directory {self.output_dir}")
+        #         self.compile(self.output_dir, file_path, self.out)
+        #         output = self.run()
+        #     except subprocess.CalledProcessError as e:
+        #         print(e.output.decode("utf8"))
+        #         output = None
+        # else:
+        #     output = f'File written in {file_path}'
 
-
-        file_path = os.path.join(self.output_dir, args.name)
-        with open(file_path, "w") as f:
-            f.write(cell)
-
-        if args.compile:
-            try:
-                self.compile(self.output_dir, file_path, self.out)
-                output = self.run()
-            except subprocess.CalledProcessError as e:
-                print(e.output.decode("utf8"))
-                output = None
-        else:
-            output = f'File written in {file_path}'
-
-        return output
+        # return output
 
     # @cell_magic
     # def cuda_run(self, line='', cell=None):
