@@ -7,6 +7,7 @@ from common import helper
 
 compiler = '/usr/local/cuda/bin/nvcc'
 
+
 @magics_class
 class NVCCPluginV2(Magics):
 
@@ -42,6 +43,7 @@ class NVCCPluginV2(Magics):
     @magic_arguments()
     @argument('-n', '--name', type=str, help='file name that will be produced by the cell. must end with .cu extension')
     @argument('-c', '--compile', type=bool, help='Should be compiled?')
+    @argument('-t', '--timeit', type=bool, help='Should be used buit-in %timeit for cell?')
     @cell_magic
     def cuda(self, line='', cell=None):
         args = parse_argstring(self.cuda, line)
