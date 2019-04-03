@@ -13,8 +13,7 @@ from IPython.utils.process import arg_split
 from .errors import NVCCUnsupportedInputFile, NVCCUnspecifiedCompiler
 
 
-compiler = '/usr/local/cuda/bin/nvcc'
-
+DEFAULT_COMPILER_PATH = '/usr/local/cuda/bin/nvcc'
 SUPPORTED_INPUT = ('.cu', '.c', '.cc', '.cxx', '.cpp', '.ptx', '.cubin', '.fatbin', '.o', '.obj', '.a', '.lib', '.res', '.so')
 
 
@@ -28,13 +27,15 @@ class NVCCPlugin(Magics):
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
         self.out = os.path.join(current_dir, "compile.out")
+        self.compiler = DEFAULT_COMPILER_PATH
+
 
     def compile(self, compiler_args, inputfile):
         options = (quote(arg) for arg in compiler_args)
         try:
             output = subprocess.check_output([
-                compiler, '-I', self.output_dir, '-o', self.out, *options, inputfile],
-                stderr=subprocess.STDOUT
+                self.compiler, '-I', quote(self.output_dir), '-o', quote(self.out), *options, inputfile],
+                stderr=subprocess.STDOUT, shell=True
             )
         except FileNotFoundError:
             raise NVCCUnspecifiedCompiler(
@@ -42,12 +43,13 @@ class NVCCPlugin(Magics):
         return output.decode('utf8')
 
     def run(self):
-        output = subprocess.check_output([self.out], stderr=subprocess.STDOUT)
+        output = subprocess.check_output(
+            [self.out], stderr=subprocess.STDOUT, shell=True)
         return output.decode('utf8')
 
     @magic_arguments()
     @argument('-n', '--name', type=str, help='File name that will be produced by the cell.')
-    @argument('-c', '--compile', type=bool, help='Should be compiled?')
+    @argument('-c', '--compile', action='store_true', help='Should be compiled?')
     @cell_magic
     def cuda(self, line, cell):
         argv = arg_split(line, posix=not sys.platform.startswith('win'))
@@ -62,7 +64,6 @@ class NVCCPlugin(Magics):
         with open(file_path, 'w') as sourse_file:
             sourse_file.write(cell)
 
-        print(cell_args.compile)
         if cell_args.compile:
             compile_output = self.compile(compiler_args, file_path)
             print(compile_output)

@@ -6,5 +6,6 @@ class NVCCError(Exception):
 class NVCCUnsupportedInputFile(NVCCError):
     pass
 
+
 class NVCCUnspecifiedCompiler(NVCCError):
     pass
