@@ -33,18 +33,19 @@ class NVCCPlugin(Magics):
     def compile(self, compiler_args, inputfile):
         options = (quote(arg) for arg in compiler_args)
         try:
-            output = subprocess.check_output([
+            output = subprocess.Popen([
                 self.compiler, '-I', quote(self.output_dir), '-o', quote(self.out), *options, inputfile],
-                stderr=subprocess.STDOUT, shell=True
+                stderr=subprocess.STDOUT, stdout=subprocess.PIPE
             )
         except FileNotFoundError:
             raise NVCCUnspecifiedCompiler(
                 'The system cannot find the specified nvcc compiler')
-        return output.decode('utf8')
+        return output.stdout.read().decode('utf8')
 
     def run(self):
-        output = subprocess.check_output(
-            [self.out], stderr=subprocess.STDOUT, shell=True)
+        # output = subprocess.check_output(
+        #     [self.out], stderr=subprocess.STDOUT, shell=True)
+        output = subprocess.Popen([self.out], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         return output.decode('utf8')
 
     @magic_arguments()
