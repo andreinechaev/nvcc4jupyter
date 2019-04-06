@@ -43,10 +43,8 @@ class NVCCPlugin(Magics):
         return output.stdout.read().decode('utf8')
 
     def run(self):
-        # output = subprocess.check_output(
-        #     [self.out], stderr=subprocess.STDOUT, shell=True)
         output = subprocess.Popen([self.out], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-        return output.stdout.decode('utf8')
+        return output.stdout.read()
 
     @magic_arguments()
     @argument('-n', '--name', type=str, help='File name that will be produced by the cell.')
