@@ -5,7 +5,7 @@ from IPython.core.magic import Magics, cell_magic, magics_class
 from IPython.core.magic_arguments import argument, magic_arguments, parse_argstring
 from common import helper
 
-compiler = '/usr/local/cuda/bin/nvcc'
+compiler = '/usr/local/cuda/bin/nvcc --Wno-deprecated-gpu-targets'
 
 @magics_class
 class NVCCPluginV2(Magics):
