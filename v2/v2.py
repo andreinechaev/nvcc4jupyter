@@ -5,7 +5,8 @@ from IPython.core.magic import Magics, cell_magic, magics_class
 from IPython.core.magic_arguments import argument, magic_arguments, parse_argstring
 from common import helper
 
-compiler = '/usr/local/cuda/bin/nvcc --Wno-deprecated-gpu-targets'
+compiler = '/usr/local/cuda/bin/nvcc'
+
 
 @magics_class
 class NVCCPluginV2(Magics):
@@ -26,18 +27,22 @@ class NVCCPluginV2(Magics):
 
     @staticmethod
     def compile(output_dir, file_paths, out):
-        res = subprocess.check_output([compiler, '-I' + output_dir, file_paths, "-o", out], stderr=subprocess.STDOUT)
-        print(res)
+        res = subprocess.check_output(
+            [compiler, '-I' + output_dir, file_paths, "-o", out, '-Wno-deprecated-gpu-targets'], stderr=subprocess.STDOUT)
+        helper.print_out(res)
 
     def run(self, timeit=False):
         if timeit:
             stmt = f"subprocess.check_output(['{self.out}'], stderr=subprocess.STDOUT)"
-            output = self.shell.run_cell_magic(magic_name="timeit", line="-q -o import subprocess", cell=stmt)
+            output = self.shell.run_cell_magic(
+                magic_name="timeit", line="-q -o import subprocess", cell=stmt)
         else:
-            output = subprocess.check_output([self.out], stderr=subprocess.STDOUT)
+            output = subprocess.check_output(
+                [self.out], stderr=subprocess.STDOUT)
             output = output.decode('utf8')
 
-        return output
+        helper.print_out(output)
+        return None
 
     @magic_arguments()
     @argument('-n', '--name', type=str, help='file name that will be produced by the cell. must end with .cu extension')
@@ -67,7 +72,7 @@ class NVCCPluginV2(Magics):
                 self.compile(self.output_dir, file_path, self.out)
                 output = self.run(timeit=args.timeit)
             except subprocess.CalledProcessError as e:
-                print(e.output.decode("utf8"))
+                helper.print_out(e.output.decode("utf8"))
                 output = None
         else:
             output = f'File written in {file_path}'
@@ -84,12 +89,13 @@ class NVCCPluginV2(Magics):
 
         try:
             cuda_src = os.listdir(self.output_dir)
-            cuda_src = [os.path.join(self.output_dir, x) for x in cuda_src if x[-3:] == '.cu']
+            cuda_src = [os.path.join(self.output_dir, x)
+                        for x in cuda_src if x[-3:] == '.cu']
             print(f'found sources: {cuda_src}')
             self.compile(self.output_dir, ' '.join(cuda_src), self.out)
             output = self.run(timeit=args.timeit)
         except subprocess.CalledProcessError as e:
-            print(e.output.decode("utf8"))
+            helper.print_out(e.output.decode("utf8"))
             output = None
 
         return output
