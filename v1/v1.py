@@ -6,7 +6,17 @@ import uuid
 from IPython.core.magic import Magics, cell_magic, magics_class
 from common import helper
 
-compiler = '/usr/local/cuda/bin/nvcc'
+# Check if nvcc is available in Anaconda
+try:
+    result = subprocess.run(['which', 'nvcc'], capture_output=True, text=True)
+    nvcc_path = result.stdout.strip()
+    if nvcc_path:
+        compiler = nvcc_path
+    else:
+        compiler = '/usr/local/cuda/bin/nvcc'
+except FileNotFoundError:
+    compiler = '/usr/local/cuda/bin/nvcc'
+
 ext = '.cu'
 
 
@@ -32,7 +42,7 @@ class NVCCPlugin(Magics):
             output = subprocess.check_output(
                 [file_path + ".out"], stderr=subprocess.STDOUT)
             output = output.decode('utf8')
-            
+
         helper.print_out(output)
         return None
 
