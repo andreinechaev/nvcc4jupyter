@@ -7,6 +7,7 @@ from IPython.core.magic import Magics, cell_magic, magics_class
 from common import helper
 
 compiler = '/usr/local/cuda/bin/nvcc'
+profiler = '/usr/local/cuda/bin/ncu'
 ext = '.cu'
 
 
@@ -23,14 +24,17 @@ class NVCCPlugin(Magics):
         subprocess.check_output(
             [compiler, file_path + ext, "-o", file_path + ".out", '-Wno-deprecated-gpu-targets'], stderr=subprocess.STDOUT)
 
-    def run(self, file_path, timeit=False):
+    def run(self, file_path, timeit=False, profile=True):
         if timeit:
             stmt = f"subprocess.check_output(['{file_path}.out'], stderr=subprocess.STDOUT)"
             output = self.shell.run_cell_magic(
                 magic_name="timeit", line="-q -o import subprocess", cell=stmt)
         else:
-            output = subprocess.check_output(
-                [file_path + ".out"], stderr=subprocess.STDOUT)
+            run_args = []
+            if profile:
+                run_args.extend([profiler, "-o", "profile"])
+            run_args.append(file_path + ".out")
+            output = subprocess.check_output(run_args, stderr=subprocess.STDOUT)
             output = output.decode('utf8')
             
         helper.print_out(output)
