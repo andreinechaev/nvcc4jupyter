@@ -37,6 +37,7 @@ class NVCCPluginV2(Magics):
             stmt = f"subprocess.check_output(['{self.out}'], stderr=subprocess.STDOUT)"
             output = self.shell.run_cell_magic(
                 magic_name="timeit", line="-q -o import subprocess", cell=stmt)
+            output = str(output) # convert TimeitResult object to human readable string
         else:
             output = subprocess.check_output(
                 [self.out], stderr=subprocess.STDOUT)
