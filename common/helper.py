@@ -16,7 +16,7 @@ def get_argparser():
         help='If set, runs the nvidia nsight compute profiler. Has no effect if used with --timeit.',
     )
     parser.add_argument(
-        '-a'
+        '-a',
         '--profiler-args',
         type=str,
         default='',
