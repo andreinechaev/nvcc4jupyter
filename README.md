@@ -23,3 +23,12 @@ V2 brings support of multiple source and header files.
 %%cuda_run
 # This line just to bypass an exeption and can contain any text
 ```
+
+- To profile your CUDA kernels using NVIDIA Nsight Compute CLI profiler you need to run
+```
+%%cu --profile
+```
+- You can add options to the profiler. Keep in mind that any argument after "--profiler-args" will be considered as a profiler argument. For example, to select which sections to collect metrics for you need to run
+```
+%%cu --profile --profiler-args --section SpeedOfLight --section MemoryWorkloadAnalysis --section Occupancy
+```
