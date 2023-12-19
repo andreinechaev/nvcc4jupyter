@@ -19,8 +19,10 @@ def get_argparser():
         '-a',
         '--profiler-args',
         type=str,
-        default='',
-        help='Extra options that can be passed to the nvidia nsight compute profiler.',
+        nargs=argparse.REMAINDER,
+        default=[],
+        help='Extra options that can be passed to the nvidia nsight compute profiler. '
+             'Must be the last option given to the argument parser so you can pass arguments with dashes.',
     )
     return parser
 
