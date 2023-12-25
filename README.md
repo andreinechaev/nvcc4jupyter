@@ -6,8 +6,11 @@ V2 brings support of multiple source and header files.
 
 ##### Usage
 
-- Load Extension
-> `%load_ext nvcc_plugin`
+- Install and load extension
+```
+!pip install git+https://github.com/andreinechaev/nvcc4jupyter.git
+%load_ext nvcc_plugin
+```
 
 - Mark a cell to be treated as cuda cell
 > `%%cuda --name example.cu --compile false`
