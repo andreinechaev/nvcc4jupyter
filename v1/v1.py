@@ -7,6 +7,7 @@ from IPython.core.magic import Magics, cell_magic, magics_class
 from common import helper
 
 compiler = '/usr/local/cuda/bin/nvcc'
+profiler = '/usr/local/cuda/bin/ncu'
 ext = '.cu'
 
 
@@ -23,15 +24,18 @@ class NVCCPlugin(Magics):
         subprocess.check_output(
             [compiler, file_path + ext, "-o", file_path + ".out", '-Wno-deprecated-gpu-targets'], stderr=subprocess.STDOUT)
 
-    def run(self, file_path, timeit=False):
+    def run(self, file_path, timeit=False, profile=False, profiler_args=[]):
         if timeit:
             stmt = f"subprocess.check_output(['{file_path}.out'], stderr=subprocess.STDOUT)"
             output = self.shell.run_cell_magic(
                 magic_name="timeit", line="-q -o import subprocess", cell=stmt)
             output = str(output) # convert TimeitResult object to human readable string
         else:
-            output = subprocess.check_output(
-                [file_path + ".out"], stderr=subprocess.STDOUT)
+            run_args = []
+            if profile:
+                run_args.extend([profiler] + profiler_args)
+            run_args.append(file_path + ".out")
+            output = subprocess.check_output(run_args, stderr=subprocess.STDOUT)
             output = output.decode('utf8')
             
         helper.print_out(output)
@@ -51,7 +55,7 @@ class NVCCPlugin(Magics):
                 f.write(cell)
             try:
                 self.compile(file_path)
-                output = self.run(file_path, timeit=args.timeit)
+                output = self.run(file_path, timeit=args.timeit, profile=args.profile, profiler_args=args.profiler_args)
             except subprocess.CalledProcessError as e:
                 helper.print_out(e.output.decode("utf8"))
                 output = None
