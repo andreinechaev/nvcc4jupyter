@@ -1,1 +1,1 @@
-from fixtures.fixtures import *
+from .fixtures.fixtures import *
