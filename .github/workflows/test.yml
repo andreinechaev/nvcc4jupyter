@@ -29,8 +29,8 @@ jobs:
 
       - name: Install CUDA tools
         run: |
-          apt update
-          apt install nvidia-cuda-toolkit
+          sudo apt update
+          sudo apt install nvidia-cuda-toolkit
 
       - name: Install Python dependencies
         run: |
