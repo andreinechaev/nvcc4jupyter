@@ -106,7 +106,3 @@ def get_parser_cuda_group_delete() -> argparse.ArgumentParser:
     )
     return parser
 
-
-def print_out(out: str):
-    for l in out.split("\n"):
-        print(l)

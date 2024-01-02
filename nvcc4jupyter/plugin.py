@@ -10,10 +10,15 @@ from typing import List, Optional
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.core.magic import Magics, cell_magic, line_magic, magics_class
 
-from common import helper
+from . import parsers
 
 DEFAULT_EXEC_FNAME = "cuda_exec.out"
 SHARED_GROUP_NAME = "shared"
+
+
+def print_out(out: str):
+    for l in out.split("\n"):
+        print(l)
 
 
 @magics_class
@@ -22,10 +27,10 @@ class NVCCPlugin(Magics):
         super(NVCCPlugin, self).__init__(shell)
         self.shell: InteractiveShell  # type hint not provided by parent class
 
-        self.parser_cuda = helper.get_parser_cuda()
-        self.parser_cuda_group_save = helper.get_parser_cuda_group_save()
-        self.parser_cuda_group_delete = helper.get_parser_cuda_group_delete()
-        self.parser_cuda_group_run = helper.get_parser_cuda_group_run()
+        self.parser_cuda = parsers.get_parser_cuda()
+        self.parser_cuda_group_save = parsers.get_parser_cuda_group_save()
+        self.parser_cuda_group_delete = parsers.get_parser_cuda_group_delete()
+        self.parser_cuda_group_run = parsers.get_parser_cuda_group_run()
 
         self.workdir = tempfile.mkdtemp()
         print(f'Source files will be saved in "{self.workdir}".')
@@ -241,7 +246,7 @@ class NVCCPlugin(Magics):
         )
 
         output = self._compile_and_run(group_name, args)
-        helper.print_out(output)
+        print_out(output)
 
     @cell_magic
     def cuda_group_save(self, line: str, cell: str) -> None:
@@ -280,7 +285,7 @@ class NVCCPlugin(Magics):
             return
 
         output = self._compile_and_run(args.group, args)
-        helper.print_out(output)
+        print_out(output)
 
     @line_magic
     def cuda_group_delete(self, line: str) -> None:
