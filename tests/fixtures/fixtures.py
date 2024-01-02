@@ -1,8 +1,5 @@
 import glob
 import os
-import sys
-
-sys.path.append(".")
 
 import pytest
 from IPython.core.interactiveshell import InteractiveShell

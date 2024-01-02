@@ -3,13 +3,9 @@ import math
 import os
 import re
 import shutil
-import sys
 from typing import List
 
 import pytest
-
-sys.path.append(".")
-
 
 from nvcc4jupyter.plugin import NVCCPlugin
 
@@ -42,9 +38,9 @@ def copy_source_to_group(
 
 @pytest.fixture(autouse=True, scope="function")
 def before_each(plugin: NVCCPlugin):
-    shutil.rmtree(plugin.workdir, ignore_errors=True) # before test
+    shutil.rmtree(plugin.workdir, ignore_errors=True)  # before test
     yield
-    pass # after test
+    pass  # after test
 
 
 def test_save_source(plugin: NVCCPlugin, sample_cuda_code: str) -> None:
