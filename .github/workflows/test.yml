@@ -27,10 +27,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      # the mkdir command bypasses a profiler error, which allows us to run it
+      # with host code only to at least check that the profiler parameters are
+      # correctly provided
       - name: Install CUDA tools
         run: |
           sudo apt update
           sudo apt install nvidia-cuda-toolkit
+          mkdir -p /usr/lib/x86_64-linux-gnu/nsight-compute/sections
 
       - name: Install Python dependencies
         run: |
