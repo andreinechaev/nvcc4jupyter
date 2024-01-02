@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.10", "3.11", "3.12"]
 
     timeout-minutes: 20
 
@@ -34,7 +34,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install nvidia-cuda-toolkit
-          mkdir -p /usr/lib/x86_64-linux-gnu/nsight-compute/sections
+          sudo mkdir -p /usr/lib/x86_64-linux-gnu/nsight-compute/sections
 
       - name: Install Python dependencies
         run: |
