@@ -11,7 +11,7 @@ import pytest
 sys.path.append(".")
 
 
-from v1.v1 import NVCCPlugin
+from nvcc4jupyter.plugin import NVCCPlugin
 
 
 def check_profiler_output(output: str):

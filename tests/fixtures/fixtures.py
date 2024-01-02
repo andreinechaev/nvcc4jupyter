@@ -7,7 +7,7 @@ sys.path.append(".")
 import pytest
 from IPython.core.interactiveshell import InteractiveShell
 
-from v1.v1 import NVCCPlugin
+from nvcc4jupyter.plugin import NVCCPlugin
 
 
 @pytest.fixture(scope="session")
