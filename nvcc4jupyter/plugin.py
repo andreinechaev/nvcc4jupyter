@@ -301,3 +301,8 @@ class NVCCPlugin(Magics):
             return
 
         self._delete_group(args.group)
+
+
+def load_ipython_extension(shell: InteractiveShell):
+    nvcc_plugin = NVCCPlugin(shell)
+    shell.register_magics(nvcc_plugin)
