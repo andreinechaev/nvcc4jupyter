@@ -5,7 +5,6 @@
 | Testing | ![Python Versions][python-version] [![CI - Test][test-badge]][test-workflow] [![Coverage][coverage-badge]][coverage-results] |
 | Package | [![PyPI Latest Release][pypi-latest-version]][pypi-project-url] [![PyPI Downloads][pypi-downloads]][pypi-project-url] |
 
-
 [python-version]: https://img.shields.io/pypi/pyversions/nvcc4jupyter
 [test-badge]: https://github.com/cosminc98/nvcc4jupyter/actions/workflows/test.yml/badge.svg
 [test-workflow]: https://github.com/cosminc98/nvcc4jupyter/actions/workflows/test.yml
@@ -14,9 +13,6 @@
 [pypi-project-url]: https://pypi.org/project/nvcc4jupyter/
 [pypi-latest-version]: https://img.shields.io/pypi/v/nvcc4jupyter.svg
 [pypi-downloads]: https://img.shields.io/pypi/dd/nvcc4jupyter.svg?label=PyPI%20downloads
-
-
-## What is it?
 
 **nvcc4jupyter** is a Jupyter Notebook plugin that provides cell and line
 [magics](https://ipython.readthedocs.io/en/stable/interactive/magics.html)
@@ -30,8 +26,7 @@ to own a GPU yourself.
 
 - [Main Features](#main-features)
 - [Install](#install)
-- [Dependencies](#dependencies)
-- [Installation from sources](#installation-from-sources)
+- [Usage](#usage)
 - [License](#license)
 - [Documentation](#documentation)
 
