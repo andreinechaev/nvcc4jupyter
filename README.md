@@ -29,6 +29,7 @@ to own a GPU yourself.
 - [Usage](#usage)
 - [License](#license)
 - [Documentation](#documentation)
+- [Contributing](#contributing)
 
 ## Main Features
 Here are just a few of the things that nvcc4jupyter does well:
@@ -74,6 +75,18 @@ The official documentation is hosted on [readthedocs](https://nvcc4jupyter.readt
 
 ## License
 [MIT](LICENSE)
+
+## Contributing
+
+Install the package with the development dependencies:
+```bash
+pip install .[dev]
+```
+
+As a developer, make sure you install the pre-commit hook before commiting any changes:
+```bash
+pre-commit install
+```
 
 <hr>
 
