@@ -1,12 +1,6 @@
 Usage
 =====
 
-This IPython extension allows running CUDA C++ code in Jupyter notebook. This
-is especially useful when combined with `Google Colab <https://colab.research.google.com/>`_
-which provides CUDA capable GPUs with the CUDA toolkit already installed.
-
-.. _installation:
-
 Installation
 ------------
 
@@ -15,8 +9,6 @@ To use nvcc4jupyter, first install it using pip:
 .. code-block:: console
 
     (venv) $ pip install nvcc4jupyter
-
-.. _load_extension:
 
 Load the Extension
 ------------------
