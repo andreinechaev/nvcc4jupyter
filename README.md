@@ -12,7 +12,7 @@
 [coverage-results]: https://codecov.io/gh/cosminc98/nvcc4jupyter
 [pypi-project-url]: https://pypi.org/project/nvcc4jupyter/
 [pypi-latest-version]: https://img.shields.io/pypi/v/nvcc4jupyter.svg
-[pypi-downloads]: https://img.shields.io/pypi/dd/nvcc4jupyter.svg?label=PyPI%20downloads
+[pypi-downloads]: https://img.shields.io/pypi/dm/nvcc4jupyter.svg?label=PyPI%20downloads
 
 **nvcc4jupyter** is a Jupyter Notebook plugin that provides cell and line
 [magics](https://ipython.readthedocs.io/en/stable/interactive/magics.html)
