@@ -3,13 +3,23 @@
 | | |
 | --- | --- |
 | Testing | ![Python Versions][python-version] [![CI - Test][test-badge]][test-workflow] [![Coverage][coverage-badge]][coverage-results] |
+| Code Quality | [![Code style: black][black-badge]][black-project] [![security: bandit][bandit-badge]][bandit-project]|
 | Package | [![PyPI Latest Release][pypi-latest-version]][pypi-project-url] [![PyPI Downloads][pypi-downloads]][pypi-project-url] |
 
+<!-- Testing badges -->
 [python-version]: https://img.shields.io/pypi/pyversions/nvcc4jupyter
 [test-badge]: https://github.com/cosminc98/nvcc4jupyter/actions/workflows/test.yml/badge.svg
 [test-workflow]: https://github.com/cosminc98/nvcc4jupyter/actions/workflows/test.yml
 [coverage-badge]: https://codecov.io/github/cosminc98/nvcc4jupyter/coverage.svg?branch=master
 [coverage-results]: https://codecov.io/gh/cosminc98/nvcc4jupyter
+
+<!-- Code Quality badges -->
+[black-badge]: https://img.shields.io/badge/code%20style-black-000000.svg
+[black-project]: https://github.com/ambv/black
+[bandit-badge]: https://img.shields.io/badge/security-bandit-yellow.svg
+[bandit-project]: https://github.com/PyCQA/bandit
+
+<!-- Package badges -->
 [pypi-project-url]: https://pypi.org/project/nvcc4jupyter/
 [pypi-latest-version]: https://img.shields.io/pypi/v/nvcc4jupyter.svg
 [pypi-downloads]: https://img.shields.io/pypi/dm/nvcc4jupyter.svg?label=PyPI%20downloads
