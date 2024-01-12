@@ -10,7 +10,7 @@ requires-python = ">=3.10"
 license = {text = "MIT License"}
 authors = [
     { name = "Andrei Nechaev", email = "lyfaradey@yahoo.com" },
-    { name = "Cosmin Stefan Ciocan", email = "ciocan.cosmin98@gmail.com },
+    { name = "Cosmin Stefan Ciocan", email = "ciocan.cosmin98@gmail.com" },
 ]
 classifiers = [
     "Programming Language :: Python",
