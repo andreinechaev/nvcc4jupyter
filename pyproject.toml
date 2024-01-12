@@ -6,10 +6,11 @@ build-backend = "hatchling.build"
 name = "nvcc4jupyter"
 description = "Jupyter notebook plugin to run CUDA C/C++ code"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 license = {text = "MIT License"}
 authors = [
     { name = "Andrei Nechaev", email = "lyfaradey@yahoo.com" },
+    { name = "Cosmin Stefan Ciocan", email = "ciocan.cosmin98@gmail.com },
 ]
 classifiers = [
     "Programming Language :: Python",
@@ -17,9 +18,17 @@ classifiers = [
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
+    'Environment :: GPU',
+    'Environment :: GPU :: NVIDIA CUDA',
+    'Framework :: IPython',
+    'Framework :: Jupyter',
 ]
 dependencies = []
 dynamic = ["version"]
+
+[project.urls]
+documentation = 'https://nvcc4jupyter.readthedocs.io/'
+repository = 'https://github.com/andreinechaev/nvcc4jupyter'
 
 [tool.hatch.version]
 path = "nvcc4jupyter/__init__.py"
