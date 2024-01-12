@@ -38,6 +38,7 @@ packages = ["nvcc4jupyter"]
 
 [project.optional-dependencies]
 testing = ["pytest>=7.4.3", "IPython>=8.19.0"]
+dev = ["pytest>=7.4.3", "IPython>=8.19.0", "pre-commit>=3.6.0", "pytest-cov[toml]>=4.1.0"]
 
 
 [tool.pytest.ini_options]
