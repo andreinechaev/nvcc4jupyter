@@ -33,8 +33,9 @@ to own a GPU yourself.
 ## Main Features
 Here are just a few of the things that nvcc4jupyter does well:
 
-  - TODO1
-  - TODO2
+  - [Easily run CUDA C++ code](https://nvcc4jupyter.readthedocs.io/en/latest/usage.html#hello-world)
+  - [Profile your code with NVIDIA Nsight Compute](https://nvcc4jupyter.readthedocs.io/en/latest/usage.html#profiling)
+  - [Share code between different programs in the same notebook / split your code into multiple files for improved readability](https://nvcc4jupyter.readthedocs.io/en/latest/usage.html#groups)
 
 ## Install
 The installer for the latest released version is available at the [Python
@@ -45,13 +46,34 @@ pip install nvcc4jupyter
 ```
 
 ## Usage
-TODO
+
+First, load the extension to enable the magic commands:
+```
+%load_ext nvcc4jupyter
+```
+
+Running a quick CUDA Hello World program:
+```c++
+%%cuda
+#include <stdio.h>
+
+__global__ void hello(){
+    printf("Hello from block: %u, thread: %u\n", blockIdx.x, threadIdx.x);
+}
+
+int main(){
+    hello<<<2, 2>>>();
+    cudaDeviceSynchronize();
+}
+```
+
+For more advanced use cases, see [the documentation](https://nvcc4jupyter.readthedocs.io/en/latest/usage.html).
 
 ## Documentation
-The official documentation is hosted on [TODO](TODO).
+The official documentation is hosted on [readthedocs](https://nvcc4jupyter.readthedocs.io/).
 
 ## License
-[TODO](LICENSE)
+[MIT](LICENSE)
 
 <hr>
 
