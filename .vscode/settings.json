@@ -24,7 +24,8 @@
         "--config=pyproject.toml"
     ],
     "flake8.args": [
-        "--toml-config=pyproject.toml"
+        "--config",
+        ".flake8"
     ],
     "isort.args": [
         "--settings-path=pyproject.toml"

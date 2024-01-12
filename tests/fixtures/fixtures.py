@@ -30,7 +30,7 @@ def fixtures_path(tests_path):
 @pytest.fixture(scope="session")
 def sample_magic_cu_line():
     # fmt: off
-    return '--profile --profiler-args "--metrics l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum"'
+    return '--profile --profiler-args "--metrics l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum"'  # noqa: E501
     # fmt: on
 
 

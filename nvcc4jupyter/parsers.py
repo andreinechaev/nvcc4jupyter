@@ -5,7 +5,7 @@ def get_parser_cuda() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
             "%%cuda magic that compiles and runs CUDA C++ code in this cell."
-            " See https://nvcc4jupyter.readthedocs.io/en/latest/magics.html#cuda"
+            " See https://nvcc4jupyter.readthedocs.io/en/latest/magics.html#cuda"  # noqa: E501
             " for usage details."
         )
     )
@@ -20,7 +20,7 @@ def get_parser_cuda_group_run() -> argparse.ArgumentParser:
     parser.description = (
         "%%cuda_group_run magic that compiles and runs source files in a given"
         " group. See"
-        " https://nvcc4jupyter.readthedocs.io/en/latest/magics.html#cuda-group-run"
+        " https://nvcc4jupyter.readthedocs.io/en/latest/magics.html#cuda-group-run"  # noqa: E501
         " for usage details."
     )
     parser.add_argument("-g", "--group", type=str, required=True)
@@ -32,7 +32,7 @@ def get_parser_cuda_group_save() -> argparse.ArgumentParser:
         description=(
             "%%cuda_group_save magic that saves CUDA C++ code in this cell for"
             " later compilation and execution with possibly more source files."
-            " See https://nvcc4jupyter.readthedocs.io/en/latest/magics.html#cuda-group-save"
+            " See https://nvcc4jupyter.readthedocs.io/en/latest/magics.html#cuda-group-save"  # noqa: E501
             " for usage details."
         )
     )
@@ -45,7 +45,7 @@ def get_parser_cuda_group_delete() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
             "%%cuda_group_delete magic that deletes all files in a group. See"
-            " https://nvcc4jupyter.readthedocs.io/en/latest/magics.html#cuda-group-delete"
+            " https://nvcc4jupyter.readthedocs.io/en/latest/magics.html#cuda-group-delete"  # noqa: E501
             " for usage details."
         )
     )

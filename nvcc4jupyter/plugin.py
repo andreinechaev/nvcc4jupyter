@@ -17,8 +17,8 @@ SHARED_GROUP_NAME = "shared"
 
 
 def print_out(out: str):
-    for l in out.split("\n"):
-        print(l)
+    for line in out.split("\n"):
+        print(line)
 
 
 @magics_class
