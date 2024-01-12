@@ -75,7 +75,9 @@ exclude_dirs = ["build","dist","tests","scripts"]
 number = 4
 recursive = true
 targets = "src"
-skips = ["B101", "B311"]
+# B404 and B603 are skipped because the user can already run any arbitrary
+# command on their jupyter server
+skips = ["B101", "B311", "B404", "B603"]
 
 [tool.black]
 line-length = 79
