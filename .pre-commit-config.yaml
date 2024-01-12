@@ -37,3 +37,10 @@ repos:
     hooks:
       - id: flake8
         args: ["--config", ".flake8"]
+
+  # pylint check
+  - repo: https://github.com/pycqa/pylint
+    rev: v3.0.3
+    hooks:
+    -   id: pylint
+        args: ["--rcfile", "pyproject.toml"]

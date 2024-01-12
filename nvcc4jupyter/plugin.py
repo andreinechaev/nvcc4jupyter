@@ -1,3 +1,7 @@
+"""
+nvcc4jupyter: CUDA C++ plugin for Jupyter Notebook
+"""
+
 import argparse
 import glob
 import os
@@ -7,6 +11,7 @@ import tempfile
 import uuid
 from typing import List, Optional
 
+# pylint: disable=import-error
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.core.magic import Magics, cell_magic, line_magic, magics_class
 
@@ -17,14 +22,19 @@ SHARED_GROUP_NAME = "shared"
 
 
 def print_out(out: str):
+    """Print string line by line."""
     for line in out.split("\n"):
         print(line)
 
 
 @magics_class
 class NVCCPlugin(Magics):
+    """
+    CUDA C++ plugin for Jupyter Notebook
+    """
+
     def __init__(self, shell: InteractiveShell):
-        super(NVCCPlugin, self).__init__(shell)
+        super().__init__(shell)
         self.shell: InteractiveShell  # type hint not provided by parent class
 
         self.parser_cuda = parsers.get_parser_cuda()
@@ -55,7 +65,7 @@ class NVCCPlugin(Magics):
             ValueError: If the source name does not have a proper extension.
         """
         _, ext = os.path.splitext(source_name)
-        if ext != ".cu" and ext != ".h":
+        if ext not in (".cu", ".h"):
             raise ValueError(
                 f'Given source name "{source_name}" must end in ".h" or ".cu".'
             )
@@ -304,5 +314,8 @@ class NVCCPlugin(Magics):
 
 
 def load_ipython_extension(shell: InteractiveShell):
+    """
+    Method used by IPython to load the extension.
+    """
     nvcc_plugin = NVCCPlugin(shell)
     shell.register_magics(nvcc_plugin)

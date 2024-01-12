@@ -142,6 +142,7 @@ extension-pkg-whitelist= [
 ]
 ignore="CVS"
 ignore-patterns="test.*?py,conftest.py"
+ignore-paths="docs,tests"
 init-hook='import sys; sys.setrecursionlimit(8 * sys.getrecursionlimit())'
 jobs=0
 limit-inference-results=100

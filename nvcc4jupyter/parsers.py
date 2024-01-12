@@ -1,7 +1,14 @@
+"""
+Parsers for the CUDA magic commands.
+"""
+
 import argparse
 
 
 def get_parser_cuda() -> argparse.ArgumentParser:
+    """
+    %%cuda magic command parser.
+    """
     parser = argparse.ArgumentParser(
         description=(
             "%%cuda magic that compiles and runs CUDA C++ code in this cell."
@@ -16,6 +23,9 @@ def get_parser_cuda() -> argparse.ArgumentParser:
 
 
 def get_parser_cuda_group_run() -> argparse.ArgumentParser:
+    """
+    %%cuda_group_run magic command parser.
+    """
     parser = get_parser_cuda()
     parser.description = (
         "%%cuda_group_run magic that compiles and runs source files in a given"
@@ -28,6 +38,9 @@ def get_parser_cuda_group_run() -> argparse.ArgumentParser:
 
 
 def get_parser_cuda_group_save() -> argparse.ArgumentParser:
+    """
+    %%cuda_group_save magic command parser.
+    """
     parser = argparse.ArgumentParser(
         description=(
             "%%cuda_group_save magic that saves CUDA C++ code in this cell for"
@@ -42,6 +55,9 @@ def get_parser_cuda_group_save() -> argparse.ArgumentParser:
 
 
 def get_parser_cuda_group_delete() -> argparse.ArgumentParser:
+    """
+    %%cuda_group_delete magic command parser.
+    """
     parser = argparse.ArgumentParser(
         description=(
             "%%cuda_group_delete magic that deletes all files in a group. See"
