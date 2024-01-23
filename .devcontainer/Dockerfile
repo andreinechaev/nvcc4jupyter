@@ -4,7 +4,7 @@ ARG VENV_PATH=/opt/dev-venv
 ENV VENV_ACTIVATE=${VENV_PATH}/bin/activate
 
 RUN apt update
-RUN apt install -y python3.10-venv nvidia-cuda-toolkit gcc vim git
+RUN apt install -y python3.10-venv nvidia-cuda-toolkit gcc vim git make language-pack-en
 
 # the mkdir command bypasses a profiler error, which allows us to run it with
 # host code only to at least check that the profiler parameters are correctly
