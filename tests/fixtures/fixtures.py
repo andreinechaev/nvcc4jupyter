@@ -28,9 +28,14 @@ def fixtures_path(tests_path):
 
 
 @pytest.fixture(scope="session")
+def compiler_cpp_17_fpath(fixtures_path: str):
+    return os.path.join(fixtures_path, "compiler", "cpp_17.cu")
+
+
+@pytest.fixture(scope="session")
 def sample_magic_cu_line():
     # fmt: off
-    return '--profile --profiler-args "--metrics l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum"'  # noqa: E501
+    return '--profile --profiler-args "--metrics l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum" --compiler-args "--optimize 3"'  # noqa: E501
     # fmt: on
 
 

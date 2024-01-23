@@ -3,6 +3,7 @@ import math
 import os
 import re
 import shutil
+import subprocess
 from typing import List
 
 import pytest
@@ -88,6 +89,21 @@ def test_compile(
         plugin._compile(gname)
 
 
+def test_compile_args(
+    plugin: NVCCPlugin,
+    compiler_cpp_17_fpath: str,
+):
+    gname = "test_compile_args"
+    copy_source_to_group(compiler_cpp_17_fpath, gname, plugin.workdir)
+
+    exec_fpath = plugin._compile(gname, compiler_args="--std c++17")
+    assert os.path.exists(exec_fpath)
+
+    # should fail due to the source file having c++ 17 features
+    with pytest.raises(subprocess.CalledProcessError):
+        exec_fpath = plugin._compile(gname, compiler_args="--std c++14")
+
+
 def test_run(
     plugin: NVCCPlugin,
     sample_cuda_fpath: str,
@@ -143,7 +159,10 @@ def test_compile_and_run_multiple_files(
     for fpath in multiple_source_fpaths:
         copy_source_to_group(fpath, gname, plugin.workdir)
     output = plugin._compile_and_run(
-        gname, argparse.Namespace(timeit=False, profile=True, profiler_args="")
+        group_name=gname,
+        args=argparse.Namespace(
+            timeit=False, profile=True, profiler_args="", compiler_args=""
+        ),
     )
     check_profiler_output(output)
 
@@ -165,7 +184,10 @@ def test_compile_and_run_multiple_files_shared(
         else:
             copy_source_to_group(fpath, "shared", plugin.workdir)
     output = plugin._compile_and_run(
-        gname, argparse.Namespace(timeit=False, profile=True, profiler_args="")
+        group_name=gname,
+        args=argparse.Namespace(
+            timeit=False, profile=True, profiler_args="", compiler_args=""
+        ),
     )
     check_profiler_output(output)
 
