@@ -1,0 +1,26 @@
+{
+    "name": "Python Environment",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+    "postCreateCommand": "bash .devcontainer/post_create.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "editorconfig.editorconfig",
+                "ms-azuretools.vscode-docker",
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-python.pylint",
+                "ms-python.isort",
+                "ms-python.flake8",
+                "ms-python.black-formatter",
+                "ryanluker.vscode-coverage-gutters"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/opt/dev-venv/bin/python"
+            }
+        }
+    }
+}
