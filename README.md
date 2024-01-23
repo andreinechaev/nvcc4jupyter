@@ -8,10 +8,10 @@
 
 <!-- Testing badges -->
 [python-version]: https://img.shields.io/pypi/pyversions/nvcc4jupyter
-[test-badge]: https://github.com/cosminc98/nvcc4jupyter/actions/workflows/test.yml/badge.svg
-[test-workflow]: https://github.com/cosminc98/nvcc4jupyter/actions/workflows/test.yml
-[coverage-badge]: https://codecov.io/github/cosminc98/nvcc4jupyter/coverage.svg?branch=master
-[coverage-results]: https://codecov.io/gh/cosminc98/nvcc4jupyter
+[test-badge]: https://github.com/andreinechaev/nvcc4jupyter/actions/workflows/test.yml/badge.svg
+[test-workflow]: https://github.com/andreinechaev/nvcc4jupyter/actions/workflows/test.yml
+[coverage-badge]: https://codecov.io/github/andreinechaev/nvcc4jupyter/coverage.svg?branch=master
+[coverage-results]: https://codecov.io/gh/andreinechaev/nvcc4jupyter
 
 <!-- Code Quality badges -->
 [black-badge]: https://img.shields.io/badge/code%20style-black-000000.svg
