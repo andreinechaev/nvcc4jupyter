@@ -6,11 +6,18 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+import os
+import sys
+
+sys.path.append(os.path.join("..", ".."))
+from nvcc4jupyter.__init__ import __version__  # noqa: E402
+
 project = "nvcc4jupyter"
 copyright = "2024, Andrei Nechaev & Cosmin Stefan Ciocan"
 author = "Andrei Nechaev & Cosmin Stefan Ciocan"
-release = "1.0.1"
-version = "1.0.1"
+release = __version__
+version = __version__
+
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
