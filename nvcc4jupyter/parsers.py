@@ -19,6 +19,7 @@ def get_parser_cuda() -> argparse.ArgumentParser:
     parser.add_argument("-t", "--timeit", action="store_true")
     parser.add_argument("-p", "--profile", action="store_true")
     parser.add_argument("-a", "--profiler-args", type=str, default="")
+    parser.add_argument("-c", "--compiler-args", type=str, default="")
     return parser
 
 
