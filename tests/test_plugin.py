@@ -103,6 +103,17 @@ def test_compile_args(
     with pytest.raises(subprocess.CalledProcessError):
         exec_fpath = plugin._compile(gname, compiler_args="--std c++14")
 
+    output = plugin._compile_and_run(
+        group_name=gname,
+        args=argparse.Namespace(
+            timeit=False,
+            profile=True,
+            profiler_args="",
+            compiler_args="--std c++14",
+        ),
+    )
+    assert "errors detected in the compilation of" in output
+
 
 def test_run(
     plugin: NVCCPlugin,
@@ -211,6 +222,16 @@ def test_magic_cuda(
 ):
     plugin.cuda(sample_magic_cu_line, sample_cuda_code)
     check_profiler_output(capsys.readouterr().out)
+
+
+def test_magic_cuda_bad_args(
+    capsys,
+    plugin: NVCCPlugin,
+    sample_cuda_code: str,
+):
+    plugin.cuda("--this-is-an-unrecognized-argument", sample_cuda_code)
+    output = capsys.readouterr().out
+    assert output.startswith("usage: ")
 
 
 def test_magic_cuda_group_save(plugin: NVCCPlugin, sample_cuda_code: str):
