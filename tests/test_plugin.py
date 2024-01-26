@@ -120,6 +120,36 @@ def test_compile_args(
     assert "errors detected in the compilation of" in output
 
 
+def test_compile_opencv(
+    plugin: NVCCPlugin,
+    compiler_opencv_fpath: str,
+):
+    gname = "test_compile_opencv"
+    copy_source_to_group(compiler_opencv_fpath, gname, plugin.workdir)
+
+    # check that "pkg-config" exists
+    assert subprocess.check_call(["which", "pkg-config"]) == 0
+
+    opencv_compile_options = (
+        subprocess.check_output(
+            args=["pkg-config", "--cflags", "--libs", "opencv4"]
+        )
+        .decode()
+        .strip()
+    )
+
+    output = plugin._compile_and_run(
+        group_name=gname,
+        args=argparse.Namespace(
+            timeit=False,
+            profile=True,
+            profiler_args="",
+            compiler_args=opencv_compile_options,
+        ),
+    )
+    assert "General configuration for OpenCV" in output
+
+
 def test_run(
     plugin: NVCCPlugin,
     sample_cuda_fpath: str,

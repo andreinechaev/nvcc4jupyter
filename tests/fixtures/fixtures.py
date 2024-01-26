@@ -38,6 +38,11 @@ def compiler_cpp_17_fpath(fixtures_path: str):
 
 
 @pytest.fixture(scope="session")
+def compiler_opencv_fpath(fixtures_path: str):
+    return os.path.join(fixtures_path, "compiler", "opencv.cu")
+
+
+@pytest.fixture(scope="session")
 def sample_magic_cu_line():
     # fmt: off
     return '--profile --profiler-args "--metrics l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum" --compiler-args "--optimize 3"'  # noqa: E501
