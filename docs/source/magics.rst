@@ -27,18 +27,26 @@ Usage
 Options
 -------
 
+.. _timeit:
+
 -t, --timeit
    Boolean. If set, returns the output of the "timeit" built-in
    ipython magic instead of stdout.
+
+.. _profile:
 
 -p, --profile
    Boolean. If set, runs the NVIDIA Nsight Compute profiler whose
    output is appended to standard output.
 
+.. _profiler_args:
+
 -a, --profiler-args
    String. Optional profiler arguments that can be space separated
    by wrapping them in double quotes. See all options here:
    `Nsight Compute CLI <https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html#command-line-options>`_
+
+.. _compiler_args:
 
 -c, --compiler-args
    String. Optional compiler arguments that can be space separated

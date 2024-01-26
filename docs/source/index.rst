@@ -10,4 +10,5 @@ which provides CUDA capable GPUs with the CUDA toolkit already installed.
    :caption: Contents:
 
    usage
+   notebooks
    magics
