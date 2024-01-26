@@ -1,10 +1,19 @@
-FROM ubuntu
+FROM nvcr.io/nvidia/cuda:12.3.1-devel-ubuntu22.04
 
 ARG VENV_PATH=/opt/dev-venv
 ENV VENV_ACTIVATE=${VENV_PATH}/bin/activate
+ENV DEBIAN_FRONTEND="noninteractive"
 
 RUN apt update
-RUN apt install -y python3.10-venv nvidia-cuda-toolkit gcc vim git make language-pack-en
+RUN apt install -y \
+    gcc \
+    git \
+    language-pack-en \
+    libopencv-dev \
+    make \
+    pkg-config \
+    python3.10-venv \
+    vim
 
 # the mkdir command bypasses a profiler error, which allows us to run it with
 # host code only to at least check that the profiler parameters are correctly
