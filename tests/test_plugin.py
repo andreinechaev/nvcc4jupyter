@@ -37,6 +37,11 @@ def copy_source_to_group(
     return destination_fpath
 
 
+@pytest.fixture(autouse=True, scope="session")
+def before_all(scripts_path: str):
+    os.environ["PATH"] = scripts_path + os.pathsep + os.environ["PATH"]
+
+
 @pytest.fixture(autouse=True, scope="function")
 def before_each(plugin: NVCCPlugin):
     shutil.rmtree(plugin.workdir, ignore_errors=True)  # before test

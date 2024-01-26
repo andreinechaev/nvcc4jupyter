@@ -28,6 +28,11 @@ def fixtures_path(tests_path):
 
 
 @pytest.fixture(scope="session")
+def scripts_path(fixtures_path: str):
+    return os.path.join(fixtures_path, "scripts")
+
+
+@pytest.fixture(scope="session")
 def compiler_cpp_17_fpath(fixtures_path: str):
     return os.path.join(fixtures_path, "compiler", "cpp_17.cu")
 
