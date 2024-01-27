@@ -188,13 +188,13 @@ class NVCCPlugin(Magics):
         try:
             exec_fpath = self._compile(
                 group_name=group_name,
-                compiler_args=args.compiler_args,
+                compiler_args=args.compiler_args(),
             )
             output = self._run(
                 exec_fpath=exec_fpath,
                 timeit=args.timeit,
                 profile=args.profile,
-                profiler_args=args.profiler_args,
+                profiler_args=args.profiler_args(),
             )
         except subprocess.CalledProcessError as e:
             output = e.output.decode("utf8")

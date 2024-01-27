@@ -255,3 +255,47 @@ Running the cell above will compile and execute the vector addition code in the
     SM Active Cycles                cycle       383.65
     Compute (SM) Throughput             %         1.19
     ----------------------- ------------- ------------
+
+Compiler arguments
+------------------
+
+In the same way profiler arguments can be passed to the profiling tool,
+compiling arguments can be passed to **nvcc**:
+
+.. code-block:: c++
+
+    %cuda_group_run --group "vector_add" --compiler-args "--optimize 3"
+
+Running the cell above will compile and execute the vector addition code in the
+"vector_add" group. During compilation, **nvcc** receives the "\-\-optimize"
+option which specifies the optimization level for host code.
+
+Set default arguments
+---------------------
+
+In the case where you execute multiple magic commands with the same compiler or
+profiler arguments you can avoid writing them every time by setting the default
+arguments:
+
+.. code-block:: python
+
+    from nvcc4jupyter import set_defaults
+    set_defaults(compiler_args="--optimize 3", profiler_args="--section SpeedOfLight")
+
+The same effect can be achieved by running "set_defaults" once for each config
+due to the fact that the default value is not changed if an a value is not
+given to the "set_defaults" function.
+
+.. code-block:: python
+
+    from nvcc4jupyter import set_defaults
+    set_defaults(compiler_args="--optimize 3")
+    set_defaults(profiler_args="--section SpeedOfLight")
+
+
+Now we can run the following cell without specifying the compiler and profiler
+arguments once again.
+
+.. code-block:: c++
+
+    %cuda_group_run --group "vector_add" --profile

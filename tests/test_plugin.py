@@ -8,6 +8,7 @@ from typing import List
 
 import pytest
 
+from nvcc4jupyter.parsers import get_parser_cuda, set_defaults
 from nvcc4jupyter.plugin import NVCCPlugin
 
 
@@ -44,9 +45,12 @@ def before_all(scripts_path: str):
 
 @pytest.fixture(autouse=True, scope="function")
 def before_each(plugin: NVCCPlugin):
-    shutil.rmtree(plugin.workdir, ignore_errors=True)  # before test
+    # BEFORE TESTS
+    set_defaults(compiler_args="", profiler_args="")
+    shutil.rmtree(plugin.workdir, ignore_errors=True)
     yield
-    pass  # after test
+    # AFTER TESTS
+    pass
 
 
 def test_save_source(plugin: NVCCPlugin, sample_cuda_code: str) -> None:
@@ -113,8 +117,8 @@ def test_compile_args(
         args=argparse.Namespace(
             timeit=False,
             profile=True,
-            profiler_args="",
-            compiler_args="--std c++14",
+            profiler_args=lambda: "",
+            compiler_args=lambda: "--std c++14",
         ),
     )
     assert "errors detected in the compilation of" in output
@@ -143,8 +147,8 @@ def test_compile_opencv(
         args=argparse.Namespace(
             timeit=False,
             profile=True,
-            profiler_args="",
-            compiler_args=opencv_compile_options,
+            profiler_args=lambda: "",
+            compiler_args=lambda: opencv_compile_options,
         ),
     )
     assert "General configuration for OpenCV" in output
@@ -207,7 +211,10 @@ def test_compile_and_run_multiple_files(
     output = plugin._compile_and_run(
         group_name=gname,
         args=argparse.Namespace(
-            timeit=False, profile=True, profiler_args="", compiler_args=""
+            timeit=False,
+            profile=True,
+            profiler_args=lambda: "",
+            compiler_args=lambda: "",
         ),
     )
     check_profiler_output(output)
@@ -232,7 +239,10 @@ def test_compile_and_run_multiple_files_shared(
     output = plugin._compile_and_run(
         group_name=gname,
         args=argparse.Namespace(
-            timeit=False, profile=True, profiler_args="", compiler_args=""
+            timeit=False,
+            profile=True,
+            profiler_args=lambda: "",
+            compiler_args=lambda: "",
         ),
     )
     check_profiler_output(output)
@@ -247,6 +257,29 @@ def test_read_args(plugin: NVCCPlugin):
     )
     assert args.a == "--this has --spaces and --dashes"
     assert math.isclose(args.b, 0.75)
+
+
+def test_set_defaults():
+    parser = get_parser_cuda()
+    args = parser.parse_args([])
+    assert args.profiler_args() == ""
+    assert args.compiler_args() == ""
+    set_defaults(profiler_args="123")
+    args = parser.parse_args([])
+    assert args.profiler_args() == "123"
+    assert args.compiler_args() == ""
+    set_defaults(compiler_args="456")
+    args = parser.parse_args([])
+    assert args.profiler_args() == "123"
+    assert args.compiler_args() == "456"
+    set_defaults(profiler_args="")
+    args = parser.parse_args([])
+    assert args.profiler_args() == ""
+    assert args.compiler_args() == "456"
+    set_defaults(profiler_args="123")
+    args = parser.parse_args(["--profiler-args", "789"])
+    assert args.profiler_args() == "789"
+    assert args.compiler_args() == "456"
 
 
 def test_magic_cuda(
