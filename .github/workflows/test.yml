@@ -35,7 +35,7 @@ jobs:
           sudo dpkg -i cuda-keyring_1.1-1_all.deb
           sudo apt-get update
           sudo apt-get -y install cuda-toolkit-12-3
-          export PATH="$PATH:/usr/local/cuda/bin"
+          echo "PATH=\"\$PATH:/usr/local/cuda/bin\"" >> ~/.bashrc
 
       - name: Install OpenCV
         run: |
@@ -78,7 +78,7 @@ jobs:
           sudo dpkg -i cuda-keyring_1.1-1_all.deb
           sudo apt-get update
           sudo apt-get -y install cuda-toolkit-12-3
-          export PATH="$PATH:/usr/local/cuda/bin"
+          echo "PATH=\"\$PATH:/usr/local/cuda/bin\"" >> ~/.bashrc
 
       - name: Install OpenCV
         run: |
