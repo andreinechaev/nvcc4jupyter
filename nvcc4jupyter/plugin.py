@@ -135,11 +135,12 @@ class NVCCPlugin(Magics):
 
         return executable_fpath
 
-    def _run(
+    def _run(  # pylint: disable=too-many-arguments
         self,
         exec_fpath: str,
         timeit: bool = False,
         profile: bool = False,
+        profiler: parsers.Profiler = parsers.Profiler.NCU,
         profiler_args: str = "",
     ) -> str:
         """
@@ -150,8 +151,9 @@ class NVCCPlugin(Magics):
             timeit: If True, returns the result of the "timeit" magic instead
                 of the standard output of the CUDA process. Defaults to False.
             profile: If True, the executable is profiled with NVIDIA Nsight
-                Compute profiling tool and its output is added to stdout.
-                Defaults to False.
+                Compute or NVIDIA Nsight Systems and the profiling output is
+                added to stdout. Defaults to False.
+            profiler: The profiling tool to use.
             profiler_args: The profiler arguments used to customize the
                 information gathered by it and its overall behaviour. Defaults
                 to an empty string.
@@ -173,7 +175,7 @@ class NVCCPlugin(Magics):
         else:
             run_args = []
             if profile:
-                run_args.extend(["ncu"] + profiler_args.split())
+                run_args.extend([profiler.value] + profiler_args.split())
             run_args.append(exec_fpath)
             output = subprocess.check_output(
                 run_args, stderr=subprocess.STDOUT
@@ -194,6 +196,7 @@ class NVCCPlugin(Magics):
                 exec_fpath=exec_fpath,
                 timeit=args.timeit,
                 profile=args.profile,
+                profiler=args.profiler(),
                 profiler_args=args.profiler_args(),
             )
         except subprocess.CalledProcessError as e:

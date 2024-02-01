@@ -3,14 +3,28 @@ Parsers for the CUDA magic commands.
 """
 
 import argparse
-from typing import Callable, Optional
+from enum import Enum
+from typing import Callable, Optional, Type, TypeVar
 
+
+class Profiler(Enum):
+    """Choice between Nsight Compute and Nsight Systems profilers."""
+
+    NCU = "ncu"
+    NSYS = "nsys"
+
+
+_default_profiler: Profiler = Profiler.NCU
 _default_profiler_args: str = ""
 _default_compiler_args: str = ""
 
+T = TypeVar("T")
+
 
 def set_defaults(
-    compiler_args: Optional[str] = None, profiler_args: Optional[str] = None
+    profiler: Optional[Profiler] = None,
+    compiler_args: Optional[str] = None,
+    profiler_args: Optional[str] = None,
 ) -> None:
     """
     Set the default values for various arguments of the magic commands. These
@@ -18,17 +32,22 @@ def set_defaults(
     to override this behaviour on a cell by cell basis.
 
     Args:
+        profiler: If not None, this value becomes the new default profiler.
+            Defaults to None.
         compiler_args: If not None, this value becomes the new default compiler
-            config. Defaults to "".
+            config. Defaults to None.
         profiler_args: If not None, this value becomes the new default profiler
-            config. Defaults to "".
+            config. Defaults to None.
     """
 
     # pylint: disable=global-statement
+    global _default_profiler
+    if profiler is not None:
+        _default_profiler = profiler
     global _default_compiler_args
-    global _default_profiler_args
     if compiler_args is not None:
         _default_compiler_args = compiler_args
+    global _default_profiler_args
     if profiler_args is not None:
         _default_profiler_args = profiler_args
 
@@ -36,6 +55,11 @@ def set_defaults(
 def str_to_lambda(arg: str) -> Callable[[], str]:
     """Convert argparse string to lambda"""
     return lambda: arg
+
+
+def class_to_lambda(arg: str, cls: Type[T]) -> Callable[[], T]:
+    """Convert string value to class and then to lambda"""
+    return lambda: cls(arg)
 
 
 def get_parser_cuda() -> argparse.ArgumentParser:
@@ -52,8 +76,14 @@ def get_parser_cuda() -> argparse.ArgumentParser:
     parser.add_argument("-t", "--timeit", action="store_true")
     parser.add_argument("-p", "--profile", action="store_true")
 
-    # --profiler-args and --compiler-args values are lambda functions to allow
+    # the type of the following arguments is a lambda lambda function to allow
     # changing the default value at runtime
+    parser.add_argument(
+        "-l",
+        "--profiler",
+        type=lambda arg: class_to_lambda(arg, cls=Profiler),
+        default=lambda: _default_profiler,
+    )
     parser.add_argument(
         "-a",
         "--profiler-args",
