@@ -225,10 +225,11 @@ Profiling
 ---------
 
 Another important feature of nvcc4jupyter is its integration with the NVIDIA
-Nsight Compute profiler, which you need to make sure is installed and its
-executable can be found in a directory in your PATH environment variable.
+Nsight Compute / NVIDIA Nsight Systems profilers, which you need to make sure
+are installed and the executables can be found in a directory in your PATH
+environment variable.
 
-In order to use it and provide the profiler with custom arguments, simply run:
+To profile using Nsight Compute with custom arguments:
 
 .. code-block:: c++
 
@@ -255,6 +256,27 @@ Running the cell above will compile and execute the vector addition code in the
     SM Active Cycles                cycle       383.65
     Compute (SM) Throughput             %         1.19
     ----------------------- ------------- ------------
+
+To profile using Nsight Systems with custom arguments:
+
+.. code-block:: c++
+
+    %cuda_group_run --group "vector_add" --profiler nsys --profile --profiler-args "profile --stats=true"
+
+Running the cell above will compile and execute the vector addition code in the
+"vector_add" group and profile it with Nsight Systems. The output will contain
+multiple tables, one of which will look similar to this:
+
+.. code-block::
+
+    [5/8] Executing 'cuda_api_sum' stats report
+
+    Time (%)  Total Time (ns)  Num Calls    Avg (ns)       Med (ns)      Min (ns)     Max (ns)    StdDev (ns)           Name
+    --------  ---------------  ---------  -------------  -------------  -----------  -----------  -----------  ----------------------
+        77.3      200,844,276          1  200,844,276.0  200,844,276.0  200,844,276  200,844,276          0.0  cudaMalloc
+        22.6       58,594,762          2   29,297,381.0   29,297,381.0   29,153,999   29,440,763    202,772.8  cudaMemcpy
+         0.1          305,450          1      305,450.0      305,450.0      305,450      305,450          0.0  cudaLaunchKernel
+         0.0            1,970          1        1,970.0        1,970.0        1,970        1,970          0.0  cuModuleGetLoadingMode
 
 Compiler arguments
 ------------------
