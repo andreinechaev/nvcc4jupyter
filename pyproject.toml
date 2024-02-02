@@ -69,6 +69,7 @@ exclude_lines = [
 
 [tool.isort]
 profile = "black"
+src_paths = ["nvcc4jupyter"] # tells isort where to find local modules to not consider them 3rd party libraries
 
 [tool.bandit]
 exclude_dirs = ["build","dist","tests","scripts"]
