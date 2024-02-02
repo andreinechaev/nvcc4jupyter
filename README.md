@@ -96,7 +96,7 @@ If not using the devcontainer you need to install the package with the
 development dependencies and install the pre-commit hook before commiting any
 changes:
 ```bash
-pip install .[dev]
+pip install -e .[dev]
 pre-commit install
 ```
 
