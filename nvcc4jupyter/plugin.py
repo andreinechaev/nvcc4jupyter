@@ -9,13 +9,20 @@ import shutil
 import subprocess
 import tempfile
 import uuid
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 # pylint: disable=import-error
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.core.magic import Magics, cell_magic, line_magic, magics_class
 
-from . import parsers
+from .parsers import (
+    Profiler,
+    get_parser_cuda,
+    get_parser_cuda_group_delete,
+    get_parser_cuda_group_run,
+    get_parser_cuda_group_save,
+)
+from .path_utils import CUDA_SEARCH_PATHS, find_executable
 
 DEFAULT_EXEC_FNAME = "cuda_exec.out"
 SHARED_GROUP_NAME = "shared"
@@ -37,13 +44,18 @@ class NVCCPlugin(Magics):
         super().__init__(shell)
         self.shell: InteractiveShell  # type hint not provided by parent class
 
-        self.parser_cuda = parsers.get_parser_cuda()
-        self.parser_cuda_group_save = parsers.get_parser_cuda_group_save()
-        self.parser_cuda_group_delete = parsers.get_parser_cuda_group_delete()
-        self.parser_cuda_group_run = parsers.get_parser_cuda_group_run()
+        self.parser_cuda = get_parser_cuda()
+        self.parser_cuda_group_save = get_parser_cuda_group_save()
+        self.parser_cuda_group_delete = get_parser_cuda_group_delete()
+        self.parser_cuda_group_run = get_parser_cuda_group_run()
 
         self.workdir = tempfile.mkdtemp()
         print(f'Source files will be saved in "{self.workdir}".')
+
+        self.profiler_paths: Dict[Profiler, Optional[str]] = {
+            Profiler.NCU: None,
+            Profiler.NSYS: None,
+        }
 
     def _save_source(
         self, source_name: str, source_code: str, group_name: str
@@ -135,12 +147,42 @@ class NVCCPlugin(Magics):
 
         return executable_fpath
 
+    def _get_profiler_path(self, profiler: Profiler) -> str:
+        """
+        Get the path of the executable of a given profiling tool. Searches
+        the directories of the PATH environment variable and some extra
+        directories where CUDA is usually installed.
+
+        Args:
+            profiler: The profiler whose executable should be found.
+
+        Raises:
+            RuntimeError: If the profiler executable could not be found.
+
+        Returns:
+            The file path of the executable.
+        """
+        profiler_path = self.profiler_paths[profiler]
+        if profiler_path is not None:
+            return profiler_path
+
+        profiler_path = find_executable(profiler.value, CUDA_SEARCH_PATHS)
+        if profiler_path is None:
+            raise RuntimeError(
+                f'Could not find the "{profiler.value}" profiling tool.'
+                " Consider searching for where it is installed and adding its"
+                " directory to the PATH environment variable."
+            )
+
+        self.profiler_paths[profiler] = profiler_path
+        return profiler_path
+
     def _run(  # pylint: disable=too-many-arguments
         self,
         exec_fpath: str,
         timeit: bool = False,
         profile: bool = False,
-        profiler: parsers.Profiler = parsers.Profiler.NCU,
+        profiler: Profiler = Profiler.NCU,
         profiler_args: str = "",
     ) -> str:
         """
@@ -175,7 +217,8 @@ class NVCCPlugin(Magics):
         else:
             run_args = []
             if profile:
-                run_args.extend([profiler.value] + profiler_args.split())
+                profiler_path = self._get_profiler_path(profiler)
+                run_args.extend([profiler_path] + profiler_args.split())
             run_args.append(exec_fpath)
             output = subprocess.check_output(
                 run_args, stderr=subprocess.STDOUT
