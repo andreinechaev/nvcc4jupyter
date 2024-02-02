@@ -83,7 +83,8 @@ skips = ["B101", "B311", "B404", "B603"]
 [tool.black]
 line-length = 79
 fast = true
-experimental-string-processing = true
+preview = true
+enable-unstable-feature = ["string_processing"]
 
 [tool.coverage.run]
 branch = true
