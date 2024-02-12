@@ -21,7 +21,7 @@ Usage
    - ``%%cuda``: Compile and run this cell.
    - ``%%cuda -p``: Also runs the Nsight Compute profiler.
    - ``%%cuda -p -a "<SPACE SEPARATED PROFILER ARGS>"``: Also runs the Nsight Compute profiler.
-   - ``%%cude -c "<SPACE SEPARATED COMPILER ARGS"``: Passes additional arguments to "nvcc".
+   - ``%%cuda -c "<SPACE SEPARATED COMPILER ARGS"``: Passes additional arguments to "nvcc".
    - ``%%cuda -t``: Outputs the "timeit" built-in magic results.
 
 Options
