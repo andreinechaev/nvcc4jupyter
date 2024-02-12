@@ -27,14 +27,19 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # the mkdir command bypasses a profiler error, which allows us to run it
-      # with host code only to at least check that the profiler parameters are
-      # correctly provided
-      - name: Install CUDA tools
+      - name: Install CUDA toolkit
         run: |
           sudo apt update
-          sudo apt install nvidia-cuda-toolkit
-          sudo mkdir -p /usr/lib/x86_64-linux-gnu/nsight-compute/sections
+          sudo apt install -y wget
+          wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+          sudo dpkg -i cuda-keyring_1.1-1_all.deb
+          sudo apt update
+          sudo apt -y install cuda-toolkit-12-3
+          echo "PATH=$PATH:/usr/local/cuda/bin" >> $GITHUB_ENV
+
+      - name: Install OpenCV
+        run: |
+          sudo apt install -y libopencv-dev pkg-config
 
       - name: Install Python dependencies
         run: |
@@ -65,11 +70,19 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install CUDA tools
+      - name: Install CUDA toolkit
         run: |
           sudo apt update
-          sudo apt install nvidia-cuda-toolkit
-          sudo mkdir -p /usr/lib/x86_64-linux-gnu/nsight-compute/sections
+          sudo apt install -y wget
+          wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+          sudo dpkg -i cuda-keyring_1.1-1_all.deb
+          sudo apt update
+          sudo apt -y install cuda-toolkit-12-3
+          echo "PATH=$PATH:/usr/local/cuda/bin" >> $GITHUB_ENV
+
+      - name: Install OpenCV
+        run: |
+          sudo apt install -y libopencv-dev pkg-config
 
       - name: Install Python dependencies
         run: |

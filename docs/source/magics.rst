@@ -21,23 +21,39 @@ Usage
    - ``%%cuda``: Compile and run this cell.
    - ``%%cuda -p``: Also runs the Nsight Compute profiler.
    - ``%%cuda -p -a "<SPACE SEPARATED PROFILER ARGS>"``: Also runs the Nsight Compute profiler.
+   - ``%%cude -c "<SPACE SEPARATED COMPILER ARGS"``: Passes additional arguments to "nvcc".
    - ``%%cuda -t``: Outputs the "timeit" built-in magic results.
 
 Options
 -------
 
+.. _timeit:
+
 -t, --timeit
    Boolean. If set, returns the output of the "timeit" built-in
    ipython magic instead of stdout.
+
+.. _profile:
 
 -p, --profile
    Boolean. If set, runs the NVIDIA Nsight Compute profiler whose
    output is appended to standard output.
 
+.. _profiler_args:
+
 -a, --profiler-args
    String. Optional profiler arguments that can be space separated
    by wrapping them in double quotes. See all options here:
    `Nsight Compute CLI <https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html#command-line-options>`_
+
+.. _compiler_args:
+
+-c, --compiler-args
+   String. Optional compiler arguments that can be space separated
+   by wrapping them in double quotes. They will be passed to "nvcc".
+   See all options here:
+   `NVCC Options <https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html#nvcc-command-options>`_
+
 
 .. note::
    If both "\-\-profile" and "\-\-timeit" are used then no profiling is
@@ -47,10 +63,11 @@ Examples
 --------
 ::
 
-   # compile, run, and profile the code in the cell with the Nsight
-   # compute profiler while collecting only metrics from the
-   # "MemoryWorkloadAnalysis" section.
-   %%cuda --profile --profiler-args "--section MemoryWorkloadAnalysis"
+   # compile, run, and profile the code in the cell with the Nsight compute
+   # profiler while collecting only metrics from the "MemoryWorkloadAnalysis"
+   # section; also provides the "--optimize 3" option to "nvcc" during
+   # compilation to optimize host code
+   %%cuda -p -a "--section MemoryWorkloadAnalysis" -c "--optimize 3"
 
 ------
 

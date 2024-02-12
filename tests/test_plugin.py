@@ -3,10 +3,12 @@ import math
 import os
 import re
 import shutil
+import subprocess
 from typing import List
 
 import pytest
 
+from nvcc4jupyter.parsers import get_parser_cuda, set_defaults
 from nvcc4jupyter.plugin import NVCCPlugin
 
 
@@ -36,11 +38,19 @@ def copy_source_to_group(
     return destination_fpath
 
 
+@pytest.fixture(autouse=True, scope="session")
+def before_all(scripts_path: str):
+    os.environ["PATH"] = scripts_path + os.pathsep + os.environ["PATH"]
+
+
 @pytest.fixture(autouse=True, scope="function")
 def before_each(plugin: NVCCPlugin):
-    shutil.rmtree(plugin.workdir, ignore_errors=True)  # before test
+    # BEFORE TESTS
+    set_defaults(compiler_args="", profiler_args="")
+    shutil.rmtree(plugin.workdir, ignore_errors=True)
     yield
-    pass  # after test
+    # AFTER TESTS
+    pass
 
 
 def test_save_source(plugin: NVCCPlugin, sample_cuda_code: str) -> None:
@@ -86,6 +96,62 @@ def test_compile(
     with pytest.raises(RuntimeError):
         os.remove(source_fpath)
         plugin._compile(gname)
+
+
+def test_compile_args(
+    plugin: NVCCPlugin,
+    compiler_cpp_17_fpath: str,
+):
+    gname = "test_compile_args"
+    copy_source_to_group(compiler_cpp_17_fpath, gname, plugin.workdir)
+
+    exec_fpath = plugin._compile(gname, compiler_args="--std c++17")
+    assert os.path.exists(exec_fpath)
+
+    # should fail due to the source file having c++ 17 features
+    with pytest.raises(subprocess.CalledProcessError):
+        exec_fpath = plugin._compile(gname, compiler_args="--std c++14")
+
+    output = plugin._compile_and_run(
+        group_name=gname,
+        args=argparse.Namespace(
+            timeit=False,
+            profile=True,
+            profiler_args=lambda: "",
+            compiler_args=lambda: "--std c++14",
+        ),
+    )
+    assert "errors detected in the compilation of" in output
+
+
+def test_compile_opencv(
+    plugin: NVCCPlugin,
+    compiler_opencv_fpath: str,
+):
+    gname = "test_compile_opencv"
+    copy_source_to_group(compiler_opencv_fpath, gname, plugin.workdir)
+
+    # check that "pkg-config" exists
+    assert subprocess.check_call(["which", "pkg-config"]) == 0
+
+    opencv_compile_options = (
+        subprocess.check_output(
+            args=["pkg-config", "--cflags", "--libs", "opencv4"]
+        )
+        .decode()
+        .strip()
+    )
+
+    output = plugin._compile_and_run(
+        group_name=gname,
+        args=argparse.Namespace(
+            timeit=False,
+            profile=True,
+            profiler_args=lambda: "",
+            compiler_args=lambda: opencv_compile_options,
+        ),
+    )
+    assert "General configuration for OpenCV" in output
 
 
 def test_run(
@@ -143,7 +209,13 @@ def test_compile_and_run_multiple_files(
     for fpath in multiple_source_fpaths:
         copy_source_to_group(fpath, gname, plugin.workdir)
     output = plugin._compile_and_run(
-        gname, argparse.Namespace(timeit=False, profile=True, profiler_args="")
+        group_name=gname,
+        args=argparse.Namespace(
+            timeit=False,
+            profile=True,
+            profiler_args=lambda: "",
+            compiler_args=lambda: "",
+        ),
     )
     check_profiler_output(output)
 
@@ -165,7 +237,13 @@ def test_compile_and_run_multiple_files_shared(
         else:
             copy_source_to_group(fpath, "shared", plugin.workdir)
     output = plugin._compile_and_run(
-        gname, argparse.Namespace(timeit=False, profile=True, profiler_args="")
+        group_name=gname,
+        args=argparse.Namespace(
+            timeit=False,
+            profile=True,
+            profiler_args=lambda: "",
+            compiler_args=lambda: "",
+        ),
     )
     check_profiler_output(output)
 
@@ -181,6 +259,29 @@ def test_read_args(plugin: NVCCPlugin):
     assert math.isclose(args.b, 0.75)
 
 
+def test_set_defaults():
+    parser = get_parser_cuda()
+    args = parser.parse_args([])
+    assert args.profiler_args() == ""
+    assert args.compiler_args() == ""
+    set_defaults(profiler_args="123")
+    args = parser.parse_args([])
+    assert args.profiler_args() == "123"
+    assert args.compiler_args() == ""
+    set_defaults(compiler_args="456")
+    args = parser.parse_args([])
+    assert args.profiler_args() == "123"
+    assert args.compiler_args() == "456"
+    set_defaults(profiler_args="")
+    args = parser.parse_args([])
+    assert args.profiler_args() == ""
+    assert args.compiler_args() == "456"
+    set_defaults(profiler_args="123")
+    args = parser.parse_args(["--profiler-args", "789"])
+    assert args.profiler_args() == "789"
+    assert args.compiler_args() == "456"
+
+
 def test_magic_cuda(
     capsys,
     plugin: NVCCPlugin,
@@ -189,6 +290,16 @@ def test_magic_cuda(
 ):
     plugin.cuda(sample_magic_cu_line, sample_cuda_code)
     check_profiler_output(capsys.readouterr().out)
+
+
+def test_magic_cuda_bad_args(
+    capsys,
+    plugin: NVCCPlugin,
+    sample_cuda_code: str,
+):
+    plugin.cuda("--this-is-an-unrecognized-argument", sample_cuda_code)
+    output = capsys.readouterr().out
+    assert output.startswith("usage: ")
 
 
 def test_magic_cuda_group_save(plugin: NVCCPlugin, sample_cuda_code: str):
