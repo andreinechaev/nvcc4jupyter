@@ -48,12 +48,23 @@ Options
 
 .. _profiler_args:
 
+.. _profiler_args:
+
 -a, --profiler-args
    String. Optional profiler arguments that can be space separated
    by wrapping them in double quotes. Will be passed to the profiler selected
    by the \-\-profiler option.. See profiler options here:
    `Nsight Compute <https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html#command-line-options>`_
    or `Nsight Systems <https://docs.nvidia.com/nsight-systems/UserGuide/index.html#command-line-options>`_.
+
+.. _compiler_args:
+
+-c, --compiler-args
+   String. Optional compiler arguments that can be space separated
+   by wrapping them in double quotes. They will be passed to "nvcc".
+   See all options here:
+   `NVCC Options <https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html#nvcc-command-options>`_
+
 
 .. _compiler_args:
 
