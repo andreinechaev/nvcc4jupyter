@@ -45,7 +45,7 @@ to own a GPU yourself.
 Here are just a few of the things that nvcc4jupyter does well:
 
   - [Easily run CUDA C++ code](https://nvcc4jupyter.readthedocs.io/en/latest/usage.html#hello-world)
-  - [Profile your code with NVIDIA Nsight Compute](https://nvcc4jupyter.readthedocs.io/en/latest/usage.html#profiling)
+  - [Profile your code with NVIDIA Nsight Compute or Nsight Systems](https://nvcc4jupyter.readthedocs.io/en/latest/usage.html#profiling)
   - [Compile your code with external libraries (e.g. OpenCV)](https://nvcc4jupyter.readthedocs.io/en/latest/notebooks.html#compiling-with-external-libraries)
   - [Share code between different programs in the same notebook / split your code into multiple files for improved readability](https://nvcc4jupyter.readthedocs.io/en/latest/usage.html#groups)
 
