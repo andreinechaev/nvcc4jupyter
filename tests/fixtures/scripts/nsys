@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo "[NSYS]"
+
+# this is a mock of nsight systems cli tool that just executes the program
+# given as the last argument
+"${@: -1}"

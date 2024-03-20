@@ -69,6 +69,7 @@ exclude_lines = [
 
 [tool.isort]
 profile = "black"
+src_paths = ["nvcc4jupyter"] # tells isort where to find local modules to not consider them 3rd party libraries
 
 [tool.bandit]
 exclude_dirs = ["build","dist","tests","scripts"]
@@ -82,7 +83,8 @@ skips = ["B101", "B311", "B404", "B603"]
 [tool.black]
 line-length = 79
 fast = true
-experimental-string-processing = true
+preview = true
+enable-unstable-feature = ["string_processing"]
 
 [tool.coverage.run]
 branch = true

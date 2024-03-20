@@ -1,9 +1,11 @@
+import argparse
 import glob
 import os
 
 import pytest
 from IPython.core.interactiveshell import InteractiveShell
 
+from nvcc4jupyter.parsers import Profiler
 from nvcc4jupyter.plugin import NVCCPlugin
 
 
@@ -70,3 +72,14 @@ def multiple_source_fpaths(fixtures_path: str):
     pattern_h = os.path.join(fixtures_path, "multiple_files", "*.h")
     pattern_cu = os.path.join(fixtures_path, "multiple_files", "*.cu")
     return list(glob.glob(pattern_h)) + list(glob.glob(pattern_cu))
+
+
+@pytest.fixture(scope="session")
+def default_args():
+    return argparse.Namespace(
+        timeit=False,
+        profile=True,
+        profiler=lambda: Profiler.NCU,
+        profiler_args=lambda: "",
+        compiler_args=lambda: "",
+    )

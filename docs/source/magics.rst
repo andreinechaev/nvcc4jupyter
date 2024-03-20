@@ -21,7 +21,7 @@ Usage
    - ``%%cuda``: Compile and run this cell.
    - ``%%cuda -p``: Also runs the Nsight Compute profiler.
    - ``%%cuda -p -a "<SPACE SEPARATED PROFILER ARGS>"``: Also runs the Nsight Compute profiler.
-   - ``%%cude -c "<SPACE SEPARATED COMPILER ARGS"``: Passes additional arguments to "nvcc".
+   - ``%%cuda -c "<SPACE SEPARATED COMPILER ARGS"``: Passes additional arguments to "nvcc".
    - ``%%cuda -t``: Outputs the "timeit" built-in magic results.
 
 Options
@@ -36,15 +36,35 @@ Options
 .. _profile:
 
 -p, --profile
-   Boolean. If set, runs the NVIDIA Nsight Compute profiler whose
-   output is appended to standard output.
+   Boolean. If set, runs the NVIDIA Nsight Compute (or NVIDIA Nsight Systems
+   if changed via the \-\-profiler option) profiler whose output is appended to
+   standard output.
+
+.. _profiler:
+
+-l, --profiler
+   String. Can either be "ncu" (the default) to use NVIDIA Nsight Compute
+   profiling tool, or "nsys" to use NVIDIA Nsight Systems profiling tool.
+
+.. _profiler_args:
 
 .. _profiler_args:
 
 -a, --profiler-args
    String. Optional profiler arguments that can be space separated
-   by wrapping them in double quotes. See all options here:
-   `Nsight Compute CLI <https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html#command-line-options>`_
+   by wrapping them in double quotes. Will be passed to the profiler selected
+   by the \-\-profiler option.. See profiler options here:
+   `Nsight Compute <https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html#command-line-options>`_
+   or `Nsight Systems <https://docs.nvidia.com/nsight-systems/UserGuide/index.html#command-line-options>`_.
+
+.. _compiler_args:
+
+-c, --compiler-args
+   String. Optional compiler arguments that can be space separated
+   by wrapping them in double quotes. They will be passed to "nvcc".
+   See all options here:
+   `NVCC Options <https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html#nvcc-command-options>`_
+
 
 .. _compiler_args:
 
