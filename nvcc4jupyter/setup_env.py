@@ -19,6 +19,9 @@ def print_platform(platform: str) -> None:
 
 
 def kaggle_setup() -> None:
+    print("Updating the package lists...")
+    check_call(["/usr/bin/apt-get", "update"], stdout=DEVNULL, stderr=STDOUT)
+
     print("Installing nvidia-cuda-toolkit, this may take a few minutes...")
     check_call(
         ["/usr/bin/apt-get", "install", "-y", "nvidia-cuda-toolkit"],
