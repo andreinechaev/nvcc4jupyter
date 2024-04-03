@@ -88,6 +88,10 @@ enable-unstable-feature = ["string_processing"]
 
 [tool.coverage.run]
 branch = true
+omit = [
+    # cannot test installing dependencies on platforms such as kaggle
+    "nvcc4jupyter/setup_env.py",
+]
 
 [tool.pyright]
 include = ["src"]

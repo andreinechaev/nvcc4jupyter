@@ -28,9 +28,6 @@ pip-delete-this-directory.txt
 nosetests.xml
 coverage.xml
 
-# Virtual Environment
-*env*
-
 # Misc
 .pytest_cache/
 .DS_Store

@@ -23,6 +23,7 @@ from .parsers import (
     get_parser_cuda_group_save,
 )
 from .path_utils import CUDA_SEARCH_PATHS, find_executable
+from .setup_env import setup_environment
 
 DEFAULT_EXEC_FNAME = "cuda_exec.out"
 SHARED_GROUP_NAME = "shared"
@@ -364,5 +365,6 @@ def load_ipython_extension(shell: InteractiveShell):
     """
     Method used by IPython to load the extension.
     """
+    setup_environment()
     nvcc_plugin = NVCCPlugin(shell)
     shell.register_magics(nvcc_plugin)
