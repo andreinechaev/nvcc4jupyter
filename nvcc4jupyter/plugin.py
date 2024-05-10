@@ -12,6 +12,7 @@ import uuid
 from typing import Dict, List, Optional
 
 # pylint: disable=import-error
+from traitlets import Unicode
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.core.magic import Magics, cell_magic, line_magic, magics_class
 
@@ -40,6 +41,7 @@ class NVCCPlugin(Magics):
     """
     CUDA C++ plugin for Jupyter Notebook
     """
+    wd = Unicode(tempfile.mkdtemp(), config=True)
 
     def __init__(self, shell: InteractiveShell):
         super().__init__(shell)
@@ -50,7 +52,7 @@ class NVCCPlugin(Magics):
         self.parser_cuda_group_delete = get_parser_cuda_group_delete()
         self.parser_cuda_group_run = get_parser_cuda_group_run()
 
-        self.workdir = os.environ['NVCC_4_JUPYTER_WORK_DIR']
+        self.workdir = self.wd
         print(f'Source files will be saved in "{self.workdir}".')
 
         self.profiler_paths: Dict[Profiler, Optional[str]] = {
