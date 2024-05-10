@@ -14,10 +14,6 @@ from typing import Optional
 PATH_PRIORITY_DIR = "/usr/bin/priority"
 KAGGLE_GCC_8_PATH = "/usr/bin/gcc-8"
 
-# default working directory
-NVCC_4_JUPYTER_WORK_DIR = tempfile.mkdtemp()
-os.environ['NVCC_4_JUPYTER_WORK_DIR'] = NVCC_4_JUPYTER_WORK_DIR
-
 def print_platform(platform: str) -> None:
     print(f'Detected platform "{platform}". Running its setup...')
 
