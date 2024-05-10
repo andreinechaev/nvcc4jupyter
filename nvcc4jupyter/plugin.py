@@ -47,10 +47,7 @@ class NVCCPlugin(Magics):
       Configurable working directory.
     """
     
-    wd = Unicode(tempfile.mkdtemp(), config=True)
-    """
-    Configurable default working directory.
-    """
+    wd = Unicode(tempfile.mkdtemp(), help="Configurable default working directory.").config=True)
 
     def __init__(self, shell: InteractiveShell):
         super().__init__(shell)
