@@ -50,11 +50,7 @@ class NVCCPlugin(Magics):
         self.parser_cuda_group_delete = get_parser_cuda_group_delete()
         self.parser_cuda_group_run = get_parser_cuda_group_run()
 
-        try:
-          wd = os.environ['NVCC_4_JUPYTER_WORK_DIR']
-        except:
-          wd = './src'
-        self.workdir = wd
+        self.workdir = os.environ['NVCC_4_JUPYTER_WORK_DIR']
         print(f'Source files will be saved in "{self.workdir}".')
 
         self.profiler_paths: Dict[Profiler, Optional[str]] = {
