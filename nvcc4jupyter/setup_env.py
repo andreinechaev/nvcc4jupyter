@@ -7,6 +7,7 @@ to work on them immediately after loading it.
 
 import os
 import traceback
+import tempfile
 from subprocess import DEVNULL, STDOUT, check_call
 from typing import Optional
 
@@ -14,7 +15,7 @@ PATH_PRIORITY_DIR = "/usr/bin/priority"
 KAGGLE_GCC_8_PATH = "/usr/bin/gcc-8"
 
 # default working directory
-NVCC_4_JUPYTER_WORK_DIR = "./src"
+NVCC_4_JUPYTER_WORK_DIR = tempfile.mkdtemp()
 os.environ['NVCC_4_JUPYTER_WORK_DIR'] = NVCC_4_JUPYTER_WORK_DIR
 
 def print_platform(platform: str) -> None:
