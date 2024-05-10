@@ -7,7 +7,6 @@ to work on them immediately after loading it.
 
 import os
 import traceback
-import tempfile
 from subprocess import DEVNULL, STDOUT, check_call
 from typing import Optional
 
