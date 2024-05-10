@@ -40,8 +40,17 @@ def print_out(out: str):
 class NVCCPlugin(Magics):
     """
     CUDA C++ plugin for Jupyter Notebook
+
+    Attributes
+    ----------
+    ``wd`` :string =tempfile.mkdtemp()
+      Configurable working directory.
     """
+    
     wd = Unicode(tempfile.mkdtemp(), config=True)
+    """
+    Configurable default working directory.
+    """
 
     def __init__(self, shell: InteractiveShell):
         super().__init__(shell)
