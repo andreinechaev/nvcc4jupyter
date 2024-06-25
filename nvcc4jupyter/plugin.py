@@ -11,10 +11,11 @@ import tempfile
 import uuid
 from typing import Dict, List, Optional
 
-# pylint: disable=import-error
-from traitlets import Unicode
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.core.magic import Magics, cell_magic, line_magic, magics_class
+
+# pylint: disable=import-error
+from traitlets import Unicode
 
 from .parsers import (
     Profiler,
@@ -47,7 +48,9 @@ class NVCCPlugin(Magics):
       Configurable working directory.
     """
     
-    wd = Unicode(tempfile.mkdtemp(), help="Configurable default working directory.").tag(config=True)
+    wd = Unicode(
+        tempfile.mkdtemp(), help="Configurable default working directory."
+    ).tag(config=True)
 
     def __init__(self, shell: InteractiveShell):
         super().__init__(shell)
