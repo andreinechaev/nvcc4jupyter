@@ -11,10 +11,10 @@ import tempfile
 import uuid
 from typing import Dict, List, Optional
 
+# pylint: disable=import-error
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.core.magic import Magics, cell_magic, line_magic, magics_class
 
-# pylint: disable=import-error
 from traitlets import Unicode
 
 from .parsers import (
