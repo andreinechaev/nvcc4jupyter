@@ -15,6 +15,8 @@ from typing import Dict, List, Optional
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.core.magic import Magics, cell_magic, line_magic, magics_class
 
+from traitlets import Unicode
+
 from .parsers import (
     Profiler,
     get_parser_cuda,
@@ -39,7 +41,16 @@ def print_out(out: str):
 class NVCCPlugin(Magics):
     """
     CUDA C++ plugin for Jupyter Notebook
+
+    Attributes
+    ----------
+    ``wd`` :string =tempfile.mkdtemp()
+      Configurable working directory.
     """
+    
+    wd = Unicode(
+        tempfile.mkdtemp(), help="Configurable default working directory."
+    ).tag(config=True)
 
     def __init__(self, shell: InteractiveShell):
         super().__init__(shell)
@@ -50,7 +61,7 @@ class NVCCPlugin(Magics):
         self.parser_cuda_group_delete = get_parser_cuda_group_delete()
         self.parser_cuda_group_run = get_parser_cuda_group_run()
 
-        self.workdir = tempfile.mkdtemp()
+        self.workdir = self.wd
         print(f'Source files will be saved in "{self.workdir}".')
 
         self.profiler_paths: Dict[Profiler, Optional[str]] = {
