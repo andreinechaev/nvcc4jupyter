@@ -5,9 +5,11 @@ import shutil
 import subprocess
 from argparse import ArgumentParser, Namespace
 from copy import deepcopy
+from pathlib import Path
 from typing import List
 
 import pytest
+from IPython.core.interactiveshell import InteractiveShell
 
 from nvcc4jupyter.parsers import Profiler, get_parser_cuda, set_defaults
 from nvcc4jupyter.plugin import NVCCPlugin
@@ -48,6 +50,31 @@ def before_each(plugin: NVCCPlugin):
     yield
     # AFTER TESTS
     pass
+
+
+def test_default_workdir_is_unique(shell: InteractiveShell) -> None:
+    # The dynamic default creates a fresh temporary directory per instance
+    # instead of a single directory shared across every plugin.
+    first = NVCCPlugin(shell=shell)
+    second = NVCCPlugin(shell=shell)
+    try:
+        assert first.workdir != second.workdir
+        assert os.path.isdir(first.workdir)
+        assert os.path.isdir(second.workdir)
+    finally:
+        shutil.rmtree(first.workdir, ignore_errors=True)
+        shutil.rmtree(second.workdir, ignore_errors=True)
+
+
+def test_configurable_workdir(shell: InteractiveShell, tmp_path: Path) -> None:
+    custom_wd = os.path.join(str(tmp_path), "custom_wd")
+    shell.config.NVCCPlugin.wd = custom_wd
+    try:
+        plugin = NVCCPlugin(shell=shell)
+        assert plugin.workdir == os.path.abspath(custom_wd)
+        assert os.path.isdir(plugin.workdir)
+    finally:
+        shell.config.NVCCPlugin.pop("wd", None)
 
 
 def test_save_source(plugin: NVCCPlugin, sample_cuda_code: str) -> None:
