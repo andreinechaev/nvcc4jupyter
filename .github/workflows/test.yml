@@ -8,13 +8,7 @@ on:
 
 jobs:
   run_tests_ubuntu:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["ubuntu-latest"]
-        python-version: ["3.10", "3.11", "3.12"]
+    runs-on: ubuntu-latest
 
     timeout-minutes: 20
 
@@ -22,10 +16,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Set up Python ${{ matrix.python-version }}
+      # The package is pure Python (built as a universal py3-none-any wheel), so
+      # a single interpreter is enough. We test the minimum supported version,
+      # which guarantees compatibility across the whole ">=3.10" range.
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.10"
 
       - name: Install CUDA toolkit
         run: |
