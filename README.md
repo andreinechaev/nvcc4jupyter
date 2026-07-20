@@ -64,6 +64,12 @@ First, load the extension to enable the magic commands:
 %load_ext nvcc4jupyter
 ```
 
+To set a working dirctory other than the default one:
+```
+%config NVCCPlugin.wd = './newWorkingDir'
+%reload_ext nvcc4jupyter
+```
+
 Running a quick CUDA Hello World program:
 ```c++
 %%cuda
