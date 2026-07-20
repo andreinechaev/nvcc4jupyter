@@ -16,21 +16,22 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
 
       - name: Find modified files
         id: file_changes
-        uses: trilom/file-changes-action@v1.2.4
-        with:
-          output: " "
-
-      - name: List modified files
-        run: echo '${{ steps.file_changes.outputs.files}}'
+        run: |
+          files=$(git diff --name-only --diff-filter=ACMR \
+            ${{ github.event.pull_request.base.sha }}...HEAD | tr '\n' ' ')
+          echo "Modified files: $files"
+          echo "files=$files" >> "$GITHUB_OUTPUT"
 
       - name: Run pre-commits
-        uses: pre-commit/action@v2.0.3
+        uses: pre-commit/action@v3.0.1
         with:
-          extra_args: --files ${{ steps.file_changes.outputs.files}}
+          extra_args: --files ${{ steps.file_changes.outputs.files }}
