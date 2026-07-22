@@ -64,7 +64,8 @@ First, load the extension to enable the magic commands:
 %load_ext nvcc4jupyter
 ```
 
-To set a working dirctory other than the default one:
+To use a working directory other than the default temporary one, configure it
+after loading the extension and then reload it:
 ```
 %config NVCCPlugin.wd = './newWorkingDir'
 %reload_ext nvcc4jupyter

@@ -8,33 +8,30 @@ on:
 
 jobs:
   run_tests_ubuntu:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["ubuntu-latest"]
-        python-version: ["3.10", "3.11", "3.12"]
+    runs-on: ubuntu-latest
 
     timeout-minutes: 20
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+      # The package is pure Python (built as a universal py3-none-any wheel), so
+      # a single interpreter is enough. We test the minimum supported version,
+      # which guarantees compatibility across the whole ">=3.10" range.
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.10"
 
       - name: Install CUDA toolkit
         run: |
           sudo apt update
           sudo apt install -y wget
-          wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+          wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
           sudo dpkg -i cuda-keyring_1.1-1_all.deb
           sudo apt update
-          sudo apt -y install cuda-toolkit-12-3
+          sudo apt -y install cuda-toolkit-12-6
           echo "PATH=$PATH:/usr/local/cuda/bin" >> $GITHUB_ENV
 
       - name: Install OpenCV
@@ -60,13 +57,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
         with:
           lfs: "true"
       - run: git lfs pull
 
       - name: Set up Python 3.10
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
@@ -74,10 +71,10 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y wget
-          wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+          wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
           sudo dpkg -i cuda-keyring_1.1-1_all.deb
           sudo apt update
-          sudo apt -y install cuda-toolkit-12-3
+          sudo apt -y install cuda-toolkit-12-6
           echo "PATH=$PATH:/usr/local/cuda/bin" >> $GITHUB_ENV
 
       - name: Install OpenCV
@@ -94,6 +91,6 @@ jobs:
         run: pytest --cov nvcc4jupyter
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

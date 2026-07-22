@@ -4,6 +4,7 @@
 #include <string>
 #include <iterator>
 
+#include <optional>
 #include <tuple>
 
 struct S {
@@ -41,7 +42,12 @@ int main()
         S value{100, "abc", 100.0};
         const auto [iter, inserted] = mySet.insert(value);
 
-        if (inserted)
-		    std::cout << "Value(" << iter->n << ", " << iter->s << ", ...) was inserted" << "\n";
+        // std::optional is a C++17 library feature; libstdc++ hides it under
+        // -std=c++14, so compiling this file as c++14 fails hard regardless of
+        // the compiler version.
+        std::optional<int> maybe_n = inserted ? std::optional<int>{iter->n} : std::nullopt;
+
+        if (maybe_n.has_value())
+		    std::cout << "Value(" << maybe_n.value() << ", " << iter->s << ", ...) was inserted" << "\n";
     }
 }

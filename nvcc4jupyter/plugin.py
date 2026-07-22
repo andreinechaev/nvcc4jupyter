@@ -14,8 +14,7 @@ from typing import Dict, List, Optional
 # pylint: disable=import-error
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.core.magic import Magics, cell_magic, line_magic, magics_class
-
-from traitlets import Unicode
+from traitlets import Unicode, default
 
 from .parsers import (
     Profiler,
@@ -44,13 +43,16 @@ class NVCCPlugin(Magics):
 
     Attributes
     ----------
-    ``wd`` :string =tempfile.mkdtemp()
-      Configurable working directory.
+    wd : str
+        Configurable working directory where source files and compiled
+        binaries are stored. Defaults to a fresh temporary directory.
     """
-    
-    wd = Unicode(
-        tempfile.mkdtemp(), help="Configurable default working directory."
-    ).tag(config=True)
+
+    wd = Unicode(help="Configurable working directory.").tag(config=True)
+
+    @default("wd")
+    def _default_wd(self) -> str:
+        return tempfile.mkdtemp()
 
     def __init__(self, shell: InteractiveShell):
         super().__init__(shell)
@@ -61,7 +63,10 @@ class NVCCPlugin(Magics):
         self.parser_cuda_group_delete = get_parser_cuda_group_delete()
         self.parser_cuda_group_run = get_parser_cuda_group_run()
 
-        self.workdir = self.wd
+        self.workdir = os.path.abspath(
+            os.path.expanduser(os.path.expandvars(self.wd))
+        )
+        os.makedirs(self.workdir, exist_ok=True)
         print(f'Source files will be saved in "{self.workdir}".')
 
         self.profiler_paths: Dict[Profiler, Optional[str]] = {
