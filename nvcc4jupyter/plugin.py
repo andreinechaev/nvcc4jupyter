@@ -285,11 +285,13 @@ class NVCCPlugin(Magics):
         for index, tok in enumerate(tokens):
             if index % 2 == 0:
                 # tokens found outside double quotes are split at whitespace
-                args_tokenized.extend(tok.split(" "))
+                args_tokenized.extend(arg for arg in tok.split(" ") if arg)
+            elif args_tokenized and args_tokenized[-1].startswith("-"):
+                # attached with "=" so that argparse does not read a value
+                # such as "-l curand" as the "-l" option
+                args_tokenized[-1] = f"{args_tokenized[-1]}={tok}"
             else:
-                # anything found between double quotes will not be split
                 args_tokenized.append(tok)
-        args_tokenized = [arg for arg in args_tokenized if len(arg) > 0]
 
         try:
             return parser.parse_args(args_tokenized)
