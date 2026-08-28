@@ -143,6 +143,36 @@ def test_compile_args(
     assert "errors detected in the compilation of" in output
 
 
+def test_compile_gpu_architecture(
+    plugin: NVCCPlugin,
+    sample_cuda_fpath: str,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    gname = "test_compile_gpu_architecture"
+    copy_source_to_group(sample_cuda_fpath, gname, plugin.workdir)
+
+    nvcc_calls: List[List[str]] = []
+
+    def fake_check_output(args, **kwargs):
+        nvcc_calls.append(args)
+        return b""
+
+    monkeypatch.setattr(
+        "nvcc4jupyter.plugin.get_architecture_args",
+        lambda compiler_args: ["--gpu-architecture", "sm_75"],
+    )
+    monkeypatch.setattr(subprocess, "check_output", fake_check_output)
+
+    plugin._compile(gname, compiler_args="--optimize 3")
+
+    assert nvcc_calls[0][:4] == [
+        "nvcc",
+        "--gpu-architecture",
+        "sm_75",
+        "--optimize",
+    ]
+
+
 def test_compile_opencv(
     plugin: NVCCPlugin,
     compiler_opencv_fpath: str,

@@ -16,6 +16,7 @@ from IPython.core.interactiveshell import InteractiveShell
 from IPython.core.magic import Magics, cell_magic, line_magic, magics_class
 from traitlets import Unicode, default
 
+from .gpu_utils import get_architecture_args
 from .parsers import (
     Profiler,
     get_parser_cuda,
@@ -123,7 +124,9 @@ class NVCCPlugin(Magics):
     ) -> str:
         """
         Compiles all source files in a given group together with all source
-        files from the group named "shared".
+        files from the group named "shared". Unless the compiler arguments
+        choose one, the code is compiled for the architecture of the GPU of
+        this machine.
 
         Args:
             group_name: The name of the source file group to be compiled.
@@ -154,8 +157,11 @@ class NVCCPlugin(Magics):
 
         executable_fpath = os.path.join(group_dirpath, executable_fname)
 
+        compiler_args_list = compiler_args.split()
+
         args = ["nvcc"]
-        args.extend(compiler_args.split())
+        args.extend(get_architecture_args(compiler_args_list))
+        args.extend(compiler_args_list)
         args.append("-I" + shared_dirpath + "," + group_dirpath)
         args.extend(source_files)
         args.extend(["-o", executable_fpath, "-Wno-deprecated-gpu-targets"])

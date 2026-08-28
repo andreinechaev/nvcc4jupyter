@@ -35,6 +35,11 @@ def scripts_path(fixtures_path: str):
 
 
 @pytest.fixture(scope="session")
+def gpu_mocks_path(fixtures_path: str):
+    return os.path.join(fixtures_path, "gpu")
+
+
+@pytest.fixture(scope="session")
 def compiler_cpp_17_fpath(fixtures_path: str):
     return os.path.join(fixtures_path, "compiler", "cpp_17.cu")
 

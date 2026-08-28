@@ -64,6 +64,10 @@ Options
    `NVCC Options <https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html#nvcc-command-options>`_
 
 .. note::
+   Unless these arguments choose a GPU architecture, the code is compiled for
+   the architecture of the GPU of this machine.
+
+.. note::
    If both "\-\-profile" and "\-\-timeit" are used then no profiling is
    done.
 
