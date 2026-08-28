@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# mock of "nvcc" that only answers the query listing the architectures it can
+# generate code for, given through the MOCK_GPU_CODES environment variable
+if [ "$1" != "--list-gpu-code" ]; then
+    exit 1
+fi
+
+echo "$MOCK_GPU_CODES" | tr " " "\n"

@@ -292,6 +292,28 @@ Running the cell above will compile and execute the vector addition code in the
 "vector_add" group. During compilation, **nvcc** receives the "\-\-optimize"
 option which specifies the optimization level for host code.
 
+GPU architecture
+----------------
+
+Before compiling, the architecture of the GPU of this machine is detected with
+**nvidia-smi** and passed to **nvcc** through the "\-\-gpu-architecture"
+option. Compiling for the GPU that runs the code avoids the just-in-time
+compilation of PTX code, which fails when the CUDA driver is older than the
+CUDA toolkit:
+
+.. code-block::
+
+    Fatal error: kernel failure (the provided PTX was compiled with an
+    unsupported toolchain.)
+
+Detection is skipped, leaving **nvcc** to use its own default, when no
+supported architecture is found or when the compiler arguments already choose
+one:
+
+.. code-block:: c++
+
+    %%cuda -c "--gpu-architecture sm_75"
+
 Set default arguments
 ---------------------
 

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# mock of "nvidia-smi" that reports the compute capability given through the
+# MOCK_COMPUTE_CAP environment variable; an empty value simulates a driver
+# too old to know the "compute_cap" query field
+if [ -z "$MOCK_COMPUTE_CAP" ]; then
+    echo "[Not Supported]"
+else
+    echo "$MOCK_COMPUTE_CAP"
+fi
