@@ -258,6 +258,33 @@ def test_read_args(plugin: NVCCPlugin):
     assert math.isclose(args.b, 0.75)
 
 
+@pytest.mark.parametrize(
+    "line,compiler_args",
+    [
+        ('-c "-l curand"', "-l curand"),
+        ('-c "-lcurand"', "-lcurand"),
+        ('-c "-arch=sm_75"', "-arch=sm_75"),
+        ('-c "--optimize 3"', "--optimize 3"),
+        ('--compiler-args "-l curand"', "-l curand"),
+    ],
+)
+def test_read_args_quoted_value(
+    plugin: NVCCPlugin, line: str, compiler_args: str
+):
+    args = plugin._read_args(line, plugin.parser_cuda)
+    assert args is not None
+    assert args.compiler_args() == compiler_args
+
+
+def test_read_args_quoted_group_name(plugin: NVCCPlugin):
+    args = plugin._read_args(
+        '-n "main.cu" -g "my group"', plugin.parser_cuda_group_save
+    )
+    assert args is not None
+    assert args.name == "main.cu"
+    assert args.group == "my group"
+
+
 def test_set_defaults():
     parser = get_parser_cuda()
     args = parser.parse_args([])
